@@ -484,7 +484,7 @@
       label: 'Taquicardia de QRS ancho (diagnóstico diferencial)', sub: 'QRS ancho, regular, sin P visible · la adenosina define el diagnóstico',
       defaultRate: 200, rateRange: [160,240],
       isWideQRSMystery: true,
-      info: '<b>Mecanismo:</b> taquicardia regular de QRS ancho, sin actividad auricular visible al inicio — el clásico dilema de "QRS ancho" donde, a partir del trazado basal solo, no se puede distinguir entre taquicardia ventricular, TSV por reentrada AV antidrómica (WPW) y TSV con aberrancia. Las tres se ven prácticamente idénticas en reposo. Probá las tres opciones de adenosina de abajo — cada una revela (o descarta) un mecanismo distinto: "Adenosina — disocia" bloquea el nodo AV sin afectar al circuito ventricular, revelando P disociadas marchando de forma independiente → confirma <b>taquicardia ventricular</b>. "Adenosina — corta (preexcitación)" termina la taquicardia porque el nodo AV forma parte del circuito, pero el ritmo sinusal que queda muestra PR corto y QRS ancho (preexcitación persistente) → confirma <b>TSV por reentrada AV antidrómica</b>. "Adenosina — corta (normal)" también termina la taquicardia, pero el ritmo sinusal que queda es completamente normal (PR y QRS normales) → confirma que era una <b>TSV con aberrancia</b>, sin ninguna vía accesoria de base.',
+      info: '<b>Mecanismo:</b> taquicardia regular de QRS ancho, sin actividad auricular visible al inicio — el clásico dilema de "QRS ancho" donde, a partir del trazado basal solo, no se puede distinguir entre taquicardia ventricular, TSV por reentrada AV antidrómica (WPW) y TSV con aberrancia. Las tres se ven prácticamente idénticas en reposo. Probá las tres opciones de adenosina de abajo — cada una revela (o descarta) un mecanismo distinto: "Adenosina — disocia" bloquea el nodo AV sin afectar al circuito ventricular, revelando P disociadas marchando de forma independiente → confirma <b>taquicardia ventricular</b>. "Adenosina — corta con preexcitación" termina la taquicardia porque el nodo AV forma parte del circuito, pero el ritmo sinusal que queda muestra PR corto y QRS ancho (preexcitación persistente) → confirma <b>TSV por reentrada AV antidrómica</b>. "Adenosina — corta sin preexcitación" también termina la taquicardia, pero el ritmo sinusal que queda es completamente normal (PR y QRS normales, sin preexcitación) → el diagnóstico queda entre <b>TSV por reentrada nodal (AVNRT) o por vía accesoria oculta (AVRT ortodrómica)</b>, en ambos casos con aberrancia durante la taquicardia — una vía accesoria oculta no muestra preexcitación en sinusal porque solo conduce en sentido retrógrado.',
       maneuverText: null
     },
     stLBBB: {
@@ -3001,7 +3001,7 @@
         rhythmNameEl.textContent = 'TSV por reentrada AV antidrómica (WPW)';
         rhythmSubEl.textContent = 'Ritmo sinusal — PR corto, QRS preexcitado (post-maniobra)';
       } else if(wqResolved==='normal'){
-        rhythmNameEl.textContent = 'TSV con aberrancia (sin vía accesoria de base)';
+        rhythmNameEl.textContent = 'TSV por reentrada nodal o vía accesoria oculta, con aberrancia';
         rhythmSubEl.textContent = 'Ritmo sinusal normal (post-maniobra)';
       } else if(!wqTerminating){
         rhythmNameEl.textContent = RHYTHMS.wideQRSMystery.label;
@@ -3299,9 +3299,9 @@
       maneuverBtn.style.display = '';
       maneuverBtn.textContent = 'Adenosina — disocia (revela TV)';
       maneuverBtnNoEffect.style.display = '';
-      maneuverBtnNoEffect.textContent = 'Adenosina — corta (preexcitación)';
+      maneuverBtnNoEffect.textContent = 'Adenosina — corta con preexcitación';
       maneuverBtn3.style.display = '';
-      maneuverBtn3.textContent = 'Adenosina — corta (normal)';
+      maneuverBtn3.textContent = 'Adenosina — corta sin preexcitación';
       maneuverBtn3.style.background = 'var(--amber)';
       maneuverBtn3.style.color = '#241a04';
       maneuverBtn3.style.border = 'none';
