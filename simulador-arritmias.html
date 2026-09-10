@@ -73,8 +73,10 @@
 
   .controls{margin-top:16px;display:grid;gap:14px;}
   .rhythm-tabs{display:flex;flex-wrap:wrap;gap:8px;}
-  .tab-group-label{flex-basis:100%;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--cyan);margin:10px 0 -2px;font-family:'IBM Plex Mono',monospace;}
-  .tab-group-label:first-child{margin-top:0;}
+  .category-tabs{display:flex;flex-wrap:wrap;gap:8px;padding-bottom:10px;margin-bottom:12px;border-bottom:1px solid var(--border);}
+  .category-tabs button{flex:0 0 auto;font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.02em;background:transparent;color:var(--ink-dim);border:1px solid var(--border);border-radius:20px;padding:8px 16px;cursor:pointer;white-space:nowrap;transition:.15s;}
+  .category-tabs button.active{background:var(--trace);color:var(--void);border-color:var(--trace);}
+  .category-tabs button:hover:not(.active){border-color:var(--cyan);color:var(--cyan);}
   .rhythm-tabs button{
     font-family:'IBM Plex Sans',sans-serif;font-size:.78rem;font-weight:500;
     background:var(--panel-2);color:var(--ink);border:1px solid var(--border);
@@ -105,6 +107,12 @@
   .contact-info .contact-role{color:var(--ink-dim);}
   .whatsapp-btn{display:inline-flex;align-items:center;gap:8px;background:#1f7a4d;color:#eafff1;border:1px solid #2ea866;border-radius:8px;padding:9px 16px;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:.82rem;font-weight:600;text-decoration:none;white-space:nowrap;transition:background .15s ease;}
   .whatsapp-btn:hover{background:#2ea866;}
+  .mode-toggle{display:inline-flex;background:var(--panel-2);border:1px solid var(--border);border-radius:11px;padding:3px;gap:2px;}
+  .mode-toggle-btn{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.8rem;background:transparent;color:var(--ink-dim);border:none;padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap;}
+  .mode-toggle-btn.active{background:var(--trace);color:var(--void);}
+  .mode-toggle-btn:hover:not(.active){color:var(--cyan);}
+  #coffeeBtn:hover{background:#c8ecfa;}
+  #coffeeMenu a:hover{background:var(--border);}
 </style>
 </head>
 <body>
@@ -116,7 +124,17 @@
       <div style="font-size:.75rem;color:var(--ink-dim);margin-top:2px;">por Dr. Sebastián Maldonado</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <button class="maneuver" id="quizModeBtn" style="background:var(--trace);color:var(--void);padding:8px 14px;font-size:.78rem;">Modo ejercicio</button>
+      <div style="position:relative;">
+        <button type="button" id="coffeeBtn" class="whatsapp-btn" style="background:#a8ddf0;border-color:#c8ecfa;color:#0a2e3d;cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+          Invitame un café
+        </button>
+        <div id="coffeeMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:8px;z-index:10;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.4);">
+          <a href="https://mpago.la/2bSsKfb" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕ $3.000</a>
+          <a href="https://mpago.la/28vma5W" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕ $5.000</a>
+          <a href="https://mpago.la/1AuQ98h" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕☕ $10.000</a>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -135,6 +153,10 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
           drsebastian.maldonado@gmail.com
         </a>
+        <div class="mode-toggle" id="modeToggle">
+          <button type="button" id="simModeBtn" class="mode-toggle-btn active">Simulador</button>
+          <button type="button" id="quizModeBtn" class="mode-toggle-btn">Modo ejercicio</button>
+        </div>
       </div>
     </div>
     <div class="monitor-head">
@@ -176,6 +198,7 @@
     <div class="row" id="maneuverRow">
       <button class="maneuver" id="maneuverBtn">Maniobra vagal / Adenosina</button>
       <button class="maneuver" id="maneuverBtnNoEffect" style="display:none;">Adenosina — sin efecto</button>
+      <button class="maneuver" id="maneuverBtn3" style="display:none;background:var(--panel-2);color:var(--ink);border:1px solid var(--border);">Tercera opción</button>
       <button class="maneuver" id="cveSyncBtn" style="display:none;background:var(--cyan);color:#04252e;">CVE sincronizada</button>
       <button class="maneuver" id="defibBtn" style="display:none;background:var(--danger);color:#2a0505;">Desfibrilación</button>
       <button class="maneuver" id="overdriveBtn" style="display:none;background:var(--cyan);color:#04252e;">Sobreestimulación auricular</button>
@@ -198,6 +221,7 @@
     <div class="info" id="infoBox" style="display:none;"></div>
 
     <div class="controls">
+      <div class="category-tabs" id="categoryTabs"></div>
       <div class="rhythm-tabs" id="rhythmTabs"></div>
     </div>
 
@@ -230,6 +254,7 @@
   const rateLabel = document.getElementById('rateLabel');
   const maneuverBtn = document.getElementById('maneuverBtn');
   const maneuverBtnNoEffect = document.getElementById('maneuverBtnNoEffect');
+  const maneuverBtn3 = document.getElementById('maneuverBtn3');
   const cveSyncBtn = document.getElementById('cveSyncBtn');
   const defibBtn = document.getElementById('defibBtn');
   const overdriveBtn = document.getElementById('overdriveBtn');
@@ -278,6 +303,18 @@
   const warnFlag = document.getElementById('warnFlag');
   const leadTag = document.getElementById('leadTag');
   const quizModeBtn = document.getElementById('quizModeBtn');
+  const simModeBtn = document.getElementById('simModeBtn');
+  const coffeeBtn = document.getElementById('coffeeBtn');
+  const coffeeMenu = document.getElementById('coffeeMenu');
+  coffeeBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    coffeeMenu.style.display = coffeeMenu.style.display==='none' ? '' : 'none';
+  });
+  document.addEventListener('click', (e)=>{
+    if(coffeeMenu.style.display!=='none' && !coffeeMenu.contains(e.target) && e.target!==coffeeBtn){
+      coffeeMenu.style.display = 'none';
+    }
+  });
   const quizPanel = document.getElementById('quizPanel');
   const quizOptions = document.getElementById('quizOptions');
   const quizFeedback = document.getElementById('quizFeedback');
@@ -286,6 +323,7 @@
   const quizExitBtn = document.getElementById('quizExitBtn');
   const quizScore = document.getElementById('quizScore');
   const tabsWrap = document.getElementById('rhythmTabs');
+  const categoryTabsWrap = document.getElementById('categoryTabs');
 
   // ---------- Rhythm definitions ----------
   const RHYTHMS = {
@@ -375,14 +413,6 @@
       maneuverText: 'El nodo AV forma parte del circuito: bloquearlo transitoriamente termina la taquicardia, con una pausa sinusal marcada antes de que reaparezca el ritmo sinusal.',
       terminatesTo: 'sinus'
     },
-    antidromic: {
-      label: 'TSV por reentrada AV antidrómica (WPW)', sub: 'QRS ancho (>140 ms) · preexcitado · regular',
-      defaultRate: 210, rateRange: [160,250],
-      info: '<b>Mecanismo:</b> conducción anterógrada por la vía accesoria y retrógrada por el nodo AV. QRS ancho (>140 ms) por preexcitación completa, con P\' retrógrada negativa visible poco después del QRS (RP corto, menor al PR), pudiendo simular taquicardia ventricular.',
-      maneuverText: 'En este circuito, el nodo AV forma parte del asa de reentrada (conducción retrógrada), por lo que bloquearlo transitoriamente con la maniobra vagal/adenosina también termina la taquicardia, con una pausa marcada antes de que reaparezca el ritmo sinusal.',
-      warn: 'Adenosina: uso con precaución si coexiste FA preexcitada',
-      terminatesTo: 'sinus'
-    },
     vt: {
       label: 'Taquicardia ventricular', sub: 'QRS ancho · P disociada (sin relación con el QRS)',
       defaultRate: 170, rateRange: [120,240],
@@ -450,6 +480,13 @@
       info: '<b>Mecanismo:</b> el nodo AV tiene dos vías de conducción (rápida y lenta) que en este caso conducen las dos al mismo tiempo desde la misma onda P — taquicardia no reentrante por doble vía nodal (dual AV nodal non-reentrant tachycardia). Cada P que "dispara doble" da <b>dos QRS angostos</b>: uno con PR corto (vía rápida) y, poco después, otro con PR más largo (vía lenta) — ambos angostos, porque los dos caminos terminan conduciendo por el mismo sistema His-Purkinje. En este modelo, los primeros 3 latidos conducen solo por la vía rápida (1 QRS por P), y los 4 siguientes disparan doble (2 QRS por P) — después vuelve a los 3 latidos simples y se repite el ciclo. El resultado neto es una frecuencia ventricular efectiva más alta que la auricular, aun sin que la aurícula esté taquicárdica.',
       maneuverText: null
     },
+    wideQRSMystery: {
+      label: 'Taquicardia de QRS ancho (diagnóstico diferencial)', sub: 'QRS ancho, regular, sin P visible · la adenosina define el diagnóstico',
+      defaultRate: 200, rateRange: [160,240],
+      isWideQRSMystery: true,
+      info: '<b>Mecanismo:</b> taquicardia regular de QRS ancho, sin actividad auricular visible al inicio — el clásico dilema de "QRS ancho" donde, a partir del trazado basal solo, no se puede distinguir entre taquicardia ventricular, TSV por reentrada AV antidrómica (WPW) y TSV con aberrancia. Las tres se ven prácticamente idénticas en reposo. Probá las tres opciones de adenosina de abajo — cada una revela (o descarta) un mecanismo distinto: "Adenosina — disocia" bloquea el nodo AV sin afectar al circuito ventricular, revelando P disociadas marchando de forma independiente → confirma <b>taquicardia ventricular</b>. "Adenosina — corta (preexcitación)" termina la taquicardia porque el nodo AV forma parte del circuito, pero el ritmo sinusal que queda muestra PR corto y QRS ancho (preexcitación persistente) → confirma <b>TSV por reentrada AV antidrómica</b>. "Adenosina — corta (normal)" también termina la taquicardia, pero el ritmo sinusal que queda es completamente normal (PR y QRS normales) → confirma que era una <b>TSV con aberrancia</b>, sin ninguna vía accesoria de base.',
+      maneuverText: null
+    },
     stLBBB: {
       label: 'Taquicardia sinusal con aberrancia de rama izquierda dependiente de frecuencia', sub: 'PR fijo 160 ms · 5 latidos a 80/min, acelera a 130 (QRS se ensancha 6 latidos), luego frena y normaliza',
       defaultRate: 130, rateRange: [130,130],
@@ -472,17 +509,17 @@
       maneuverText: null
     },
     junctionalEscape: {
-      label: 'Bradicardia sinusal con ritmo de escape nodal', sub: 'QRS angosto 40-60/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
+      label: 'Ritmo de escape nodal', sub: 'QRS angosto 40-60/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
       defaultRate: 50, rateRange: [40,60],
-      isRIVA: true, narrowQRS: true,
-      info: '<b>Mecanismo:</b> el nodo sinusal está lento (bradicardia), y la unión AV toma el control como marcapasos de escape a su frecuencia intrínseca (40-60/min) — QRS angosto, ya que conduce normalmente por el His-Purkinje. Igual que en el ritmo nodal acelerado, hay <b>disociación auriculoventricular isorrítmica</b>: al ser las frecuencias sinusal y nodal muy similares, la P no da la vuelta a todo el ciclo, sino que va derivando muy lentamente, siempre con un RP menor que el PR, pudiendo caer directamente dentro del propio QRS. El botón "Maniobra taquicardizante" acelera la frecuencia sinusal (simulando, por ejemplo, atropina) hasta que le gana en frecuencia al escape nodal, recapturando el ventrículo con conducción AV normal — efecto que dura varios segundos antes de volver al estado basal.',
+      isRIVA: true, narrowQRS: true, maxRP: 0.15,
+      info: '<b>Mecanismo:</b> el nodo sinusal está lento (bradicardia), y la unión AV toma el control como marcapasos de escape a su frecuencia intrínseca (40-60/min) — QRS angosto, ya que conduce normalmente por el His-Purkinje. Igual que en el ritmo nodal acelerado, hay <b>disociación auriculoventricular isorrítmica</b>: al ser las frecuencias sinusal y nodal muy similares, la P no da la vuelta a todo el ciclo, sino que va derivando muy lentamente, siempre con un RP que fluctúa entre 0 y 150 ms, pudiendo caer directamente dentro del propio QRS. El botón "Maniobra taquicardizante" acelera la frecuencia sinusal (simulando, por ejemplo, atropina) hasta que le gana en frecuencia al escape nodal, recapturando el ventrículo con conducción AV normal — efecto que dura varios segundos antes de volver al estado basal.',
       maneuverText: null
     },
     ventricularEscape: {
-      label: 'Bradicardia sinusal con ritmo de escape ventricular', sub: 'QRS ancho (BRI) 30-45/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
+      label: 'Ritmo de escape ventricular', sub: 'QRS ancho (BRI) 30-45/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
       defaultRate: 37, rateRange: [30,45],
-      isRIVA: true,
-      info: '<b>Mecanismo:</b> el nodo sinusal está lento (bradicardia), y como ni la unión AV alcanza a escapar, un foco ventricular toma el control como marcapasos de escape a su frecuencia intrínseca, más lenta todavía (30-45/min) — QRS ancho, modelado acá con patrón de bloqueo de rama izquierda, igual que en el RIVA. Hay <b>disociación auriculoventricular isorrítmica</b>: al ser las frecuencias sinusal y ventricular muy similares, la P no da la vuelta a todo el ciclo, sino que va derivando muy lentamente, siempre con un RP menor que el PR, pudiendo caer directamente dentro del propio QRS. El botón "Maniobra taquicardizante" acelera la frecuencia sinusal (simulando, por ejemplo, atropina) hasta que le gana en frecuencia al escape ventricular, recapturando el ventrículo con conducción AV normal (QRS angosto) — efecto que dura varios segundos antes de volver al estado basal. Un escape tan lento como este es clínicamente más preocupante que el nodal, y suele ameritar marcapasos.',
+      isRIVA: true, maxRP: 0.15,
+      info: '<b>Mecanismo:</b> el nodo sinusal está lento (bradicardia), y como ni la unión AV alcanza a escapar, un foco ventricular toma el control como marcapasos de escape a su frecuencia intrínseca, más lenta todavía (30-45/min) — QRS ancho, modelado acá con patrón de bloqueo de rama izquierda, igual que en el RIVA. Hay <b>disociación auriculoventricular isorrítmica</b>: al ser las frecuencias sinusal y ventricular muy similares, la P no da la vuelta a todo el ciclo, sino que va derivando muy lentamente, siempre con un RP que fluctúa entre 0 y 150 ms, pudiendo caer directamente dentro del propio QRS. El botón "Maniobra taquicardizante" acelera la frecuencia sinusal (simulando, por ejemplo, atropina) hasta que le gana en frecuencia al escape ventricular, recapturando el ventrículo con conducción AV normal (QRS angosto) — efecto que dura varios segundos antes de volver al estado basal. Un escape tan lento como este es clínicamente más preocupante que el nodal, y suele ameritar marcapasos.',
       maneuverText: null
     },
     tachyBrady: {
@@ -602,11 +639,11 @@
       maneuverText: null
     },
     pacemakerAtrialFailure: {
-      label: 'Marcapasos DDD — falla de captura auricular con escape nodal', sub: 'Estimulación auricular + sensado ventricular · falla auricular → escape nodal ~30/min',
+      label: 'Marcapasos DDD — falla de captura auricular', sub: 'Estimulación auricular + AV intacta · falla auricular → QRS estimulado a los 160 ms igual',
       defaultRate: 75, rateRange: [50,100],
       isPacemakerAtrialFailure: true,
       fixButton: 'output_up',
-      info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — estimula la aurícula (espiga seguida de P) y sensa el ventrículo (el QRS que sigue es angosto y nace de conducción intrínseca normal, sin espiga ventricular, porque la conducción AV está intacta). Tras varios latidos con captura auricular efectiva, la espiga auricular deja de capturar — no hay P después de ella, y sin despolarización auricular no hay nada que conducir. Al persistir la falla, aparece un ritmo de escape nodal (de la unión AV), propio del paciente, mucho más lento (~30/min) y completamente disociado de las espigas auriculares fallidas — hasta que la captura auricular se recupera y todo vuelve a la normalidad.',
+      info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — estimula la aurícula (espiga seguida de P) y, con conducción AV intacta, el QRS que sigue nace de conducción intrínseca normal (angosto, sin espiga ventricular). Tras varios latidos con captura auricular efectiva, la espiga auricular deja de capturar — no hay P después de ella, y sin despolarización auricular no hay nada que conducir por el nodo AV. Pero el dispositivo no tiene forma de saber que la captura auricular falló: sigue contando su intervalo AV programado igual, y a los <b>160 ms</b> de cada espiga auricular fallida dispara su salida ventricular — apareciendo un QRS estimulado (con su propia espiga) en cada uno de esos latidos, de forma constante, hasta que la captura auricular se recupera y todo vuelve a la normalidad.',
       maneuverText: null
     },
     pacemakerAtrialUndersense: {
@@ -649,15 +686,17 @@
       maneuverText: null
     }
   };
-  const order = ['sinus','sinusBrady','mobitz1','mobitz2','avblock21','chb','sinusPause','saMobitz1','saMobitz2','junctionalEscape','ventricularEscape','tachyBrady','bigeminy','bigeminyNormalPulse','bigeminySVT','pvcCouplet','pvcTriplet','trigeminy','trigeminyNodal','pacAberrant','pacBlocked','avnrt','avrt','antidromic','vtTachy','jet','at','atRBBB','svt21','atVariable','doubleFire','stLBBB','riva','junctionalAccel','coumel','flutter','afib','afibWPW','pacemakerDDD','pacemakerAtrialFailure','pacemakerAtrialUndersense','pacemakerVentricularUndersense','pacemakerAtrialOversense','pacemakerVentricularOversense','pmt','vt','tdp','vf','asystole'];
+  const order = ['sinus','sinusBrady','mobitz1','mobitz2','avblock21','chb','sinusPause','saMobitz1','saMobitz2','junctionalEscape','ventricularEscape','tachyBrady','bigeminy','bigeminyNormalPulse','bigeminySVT','pvcCouplet','pvcTriplet','trigeminy','trigeminyNodal','pacAberrant','pacBlocked','avnrt','avrt','wideQRSMystery','vtTachy','jet','at','atRBBB','svt21','atVariable','doubleFire','stLBBB','riva','junctionalAccel','coumel','flutter','afib','afibWPW','pacemakerDDD','pacemakerAtrialFailure','pacemakerAtrialUndersense','pacemakerVentricularUndersense','pacemakerAtrialOversense','pacemakerVentricularOversense','pmt','vt','tdp','vf','asystole'];
   const TAB_GROUPS = {
-    sinusBrady: 'Bradicardia y bloqueo', mobitz1: 'Bradicardia y bloqueo', mobitz2: 'Bradicardia y bloqueo', avblock21: 'Bradicardia y bloqueo', chb: 'Bradicardia y bloqueo', sinusPause: 'Bradicardia y bloqueo', saMobitz1: 'Bradicardia y bloqueo', saMobitz2: 'Bradicardia y bloqueo', junctionalEscape: 'Bradicardia y bloqueo', ventricularEscape: 'Bradicardia y bloqueo', tachyBrady: 'Bradicardia y bloqueo',
+    sinus: 'Ritmo sinusal', sinusBrady: 'Bradicardia y bloqueo', mobitz1: 'Bradicardia y bloqueo', mobitz2: 'Bradicardia y bloqueo', avblock21: 'Bradicardia y bloqueo', chb: 'Bradicardia y bloqueo', sinusPause: 'Bradicardia y bloqueo', saMobitz1: 'Bradicardia y bloqueo', saMobitz2: 'Bradicardia y bloqueo', junctionalEscape: 'Bradicardia y bloqueo', ventricularEscape: 'Bradicardia y bloqueo', tachyBrady: 'Bradicardia y bloqueo',
     bigeminy: 'Extrasístoles', bigeminyNormalPulse: 'Extrasístoles', bigeminySVT: 'Extrasístoles', pvcCouplet: 'Extrasístoles', pvcTriplet: 'Extrasístoles', trigeminy: 'Extrasístoles', trigeminyNodal: 'Extrasístoles', pacAberrant: 'Extrasístoles', pacBlocked: 'Extrasístoles',
-    avnrt: 'Taquicardia', avrt: 'Taquicardia', antidromic: 'Taquicardia', vtTachy: 'Taquicardia',
-    jet: 'Taquicardia', at: 'Taquicardia', atRBBB: 'Taquicardia', svt21: 'Taquicardia', atVariable: 'Taquicardia', doubleFire: 'Taquicardia', stLBBB: 'Taquicardia', riva: 'Taquicardia', junctionalAccel: 'Taquicardia', coumel: 'Taquicardia', flutter: 'Taquicardia', afib: 'Taquicardia', afibWPW: 'Taquicardia',
+    avnrt: 'Taquicardia', avrt: 'Taquicardia', vtTachy: 'Taquicardia',
+    jet: 'Taquicardia', at: 'Taquicardia', atRBBB: 'Taquicardia', svt21: 'Taquicardia', atVariable: 'Taquicardia', wideQRSMystery: 'Taquicardia', doubleFire: 'Taquicardia', stLBBB: 'Taquicardia', riva: 'Taquicardia', junctionalAccel: 'Taquicardia', coumel: 'Taquicardia', flutter: 'Taquicardia', afib: 'Taquicardia', afibWPW: 'Taquicardia',
     pacemakerDDD: 'Falla de marcapasos', pacemakerAtrialFailure: 'Falla de marcapasos', pacemakerAtrialUndersense: 'Falla de marcapasos', pacemakerVentricularUndersense: 'Falla de marcapasos', pacemakerAtrialOversense: 'Falla de marcapasos', pacemakerVentricularOversense: 'Falla de marcapasos', pmt: 'Falla de marcapasos',
     vt: 'Ritmo de paro', tdp: 'Ritmo de paro', vf: 'Ritmo de paro', asystole: 'Ritmo de paro'
   };
+  const CATEGORY_ORDER = ['Ritmo sinusal', 'Bradicardia y bloqueo', 'Extrasístoles', 'Taquicardia', 'Falla de marcapasos', 'Ritmo de paro'];
+  let activeCategory = 'Ritmo sinusal';
 
   let currentKey = 'sinus';
   let targetRate = RHYTHMS.sinus.defaultRate;
@@ -741,6 +780,14 @@
       [0.20,0],[0.30,0.14],[0.42,0.14],[0.50,0],[1,0]
     ], frac);
   }
+  function qrsRs(frac){
+    // Rs morphology: dominant positive R, small terminal s, no initial q
+    return interpTemplate([
+      [0,0],[0.08,0],
+      [0.095,0.85],[0.115,-0.22],[0.13,0],
+      [0.20,0],[0.30,0.14],[0.42,0.14],[0.50,0],[1,0]
+    ], frac);
+  }
 
   // ---------- Flutter tab: synchronized cardioversion vs. unsynchronized defibrillation ----------
   // Two distinct button-driven sequences, layered on top of whatever rhythm is currently
@@ -809,7 +856,7 @@
   function updateFlutterCVButtons(){
     const idle = flutterCVPhase===null && flutterOverdrivePhase===null;
     const showCVE = (currentKey==='flutter' || currentKey==='afib' || currentKey==='afibWPW') && idle;
-    const showDefib = idle && (currentKey==='flutter' || currentKey==='afib' || (currentKey==='tdp' && flutterInducedTdP) || (currentKey==='vf' && vfCoarseOverride) || currentKey==='vt');
+    const showDefib = idle && (currentKey==='flutter' || currentKey==='afib' || currentKey==='tdp' || currentKey==='vf' || currentKey==='vt');
     const showOverdrive = currentKey==='flutter' && idle;
     cveSyncBtn.style.display = showCVE ? '' : 'none';
     defibBtn.style.display = showDefib ? '' : 'none';
@@ -834,10 +881,10 @@
       // land the shock on the T wave of the upcoming QRS cycle
       flutterShockTargetTime = nextBeatAt + 0.35*currentRR;
       flutterCVPhase = 'awaitingShockOnT';
-    } else if(currentKey==='tdp' && flutterInducedTdP){
+    } else if(currentKey==='tdp'){
       flutterCVPhase = 'shock2';
       flutterShockEventStart = simTime;
-    } else if(currentKey==='vf' && vfCoarseOverride){
+    } else if(currentKey==='vf'){
       flutterCVPhase = 'shock2';
       flutterShockEventStart = simTime;
     } else if(currentKey==='vt'){
@@ -938,6 +985,86 @@
       [tOnset,0],[tPeak1,0.13],[tPeak2,0.13],[tEnd,0],[rr,0]
     ], rr);
     return interpTemplate(pts, frac);
+  }
+
+  // ---------- Wide QRS tachycardia (differential diagnosis) ----------
+  // Baseline: same wide, slurred delta-like QRS as antidromic AVRT, but with NO visible P at
+  // all — deliberately ambiguous, since VT, antidromic AVRT, and aberrantly-conducted SVT can
+  // all look identical at baseline. Three buttons give adenosine's three possible outcomes,
+  // each one revealing (or ruling out) a different mechanism.
+  function wideBeatNoP(frac, rr){
+    const qrsEnd = 0.19;
+    const remain = Math.max(0.02, rr - 0.22);
+    const tOnset = 0.22 + remain*0.15;
+    const tPeak1 = 0.22 + remain*0.45;
+    const tPeak2 = 0.22 + remain*0.75;
+    const tEnd = 0.22 + remain*0.95;
+    const pts = absToFrac([
+      [0,0],[0.03,0],
+      [0.12,0.85],[0.145,-0.32],[0.175,0.05],[qrsEnd,0],
+      [tOnset,0],[tPeak1,0.13],[tPeak2,0.13],[tEnd,0],[rr,0]
+    ], rr);
+    return interpTemplate(pts, frac);
+  }
+  function wpwSinusBeat(frac, rr){
+    // sinus rhythm with pre-excitation: normal P clearly BEFORE the QRS, short PR (accessory
+    // pathway conducts faster than the AV node), then the same wide, slurred delta QRS
+    return interpTemplate(absToFrac([
+      [0,0],[0.03,0],[0.06,0.10],[0.09,0], // normal sinus P
+      [0.10,0], // short PR (~100ms) — QRS onset
+      [0.19,0.85],[0.215,-0.32],[0.245,0.05],[0.29,0], // wide, slurred delta QRS
+      [0.35,0],[0.39,0.13],[0.43,0.13],[0.47,0], // T wave
+      [rr,0]
+    ], rr), frac);
+  }
+  const WQ_DISSOCIATE_DURATION = 5.0; // seconds — how long the revealed AV dissociation stays visible
+  const WQ_DISSOC_ATRIAL_RATE = 85; // independent sinus rate shown marching through during the reveal
+  const WQ_PAUSE_DURATION = 1.5;
+  const WQ_SINUS_RATE = 75; // fixed normal sinus rate once the tachycardia terminates
+  let wqDissociateActive = false;
+  let wqDissociateStart = 0;
+  let wqDissocPNextAt = 0;
+  let wqTerminating = false;
+  let wqTerminateTarget = null; // 'preexcited' | 'normal'
+  let wqPauseEnd = 0;
+  let wqResolved = null; // null | 'vt' | 'preexcited' | 'normal' — persists once revealed/terminated
+  function wqSmallPWave(frac){
+    return interpTemplate([[0,0],[0.33,0],[0.55,0.10],[0.78,0],[1,0]], frac);
+  }
+  function sampleWideQRSMystery(t){
+    if(wqDissociateActive && (t-wqDissociateStart) >= WQ_DISSOCIATE_DURATION){
+      wqDissociateActive = false;
+    }
+    if(wqTerminating){
+      if(t < wqPauseEnd) return 0;
+      wqTerminating = false;
+      wqResolved = wqTerminateTarget;
+      nextBeatAt = t + 0.3;
+    }
+    if(wqResolved==='preexcited' || wqResolved==='normal'){
+      if(t >= nextBeatAt){
+        currentRR = 60/WQ_SINUS_RATE;
+        nextBeatAt += currentRR;
+      }
+      const frac = (t-(nextBeatAt-currentRR))/currentRR;
+      if(frac<0 || frac>=1) return 0;
+      return wqResolved==='preexcited' ? wpwSinusBeat(Math.min(frac,0.999), currentRR) : sinusBradyBeat(Math.min(frac,0.999), currentRR);
+    }
+    if(t >= nextBeatAt){
+      currentRR = 60/targetRate;
+      nextBeatAt += currentRR;
+    }
+    const frac = (t-(nextBeatAt-currentRR))/currentRR;
+    let v = 0;
+    if(frac>=0 && frac<1) v += (wqDissociateActive ? wideBeatNoP(Math.min(frac,0.999), currentRR) : wideBeat(Math.min(frac,0.999)));
+    if(wqDissociateActive){
+      const atrialRR = 60/WQ_DISSOC_ATRIAL_RATE;
+      if(wqDissocPNextAt===0) wqDissocPNextAt = t + atrialRR*0.1;
+      if(t >= wqDissocPNextAt) wqDissocPNextAt += atrialRR;
+      const pFrac = (t-(wqDissocPNextAt-atrialRR))/0.09;
+      if(pFrac>=0 && pFrac<1) v += wqSmallPWave(Math.min(pFrac,0.999));
+    }
+    return v;
   }
 
   // No P wave here (neither normal nor retrograde) — the atria are fibrillating chaotically,
@@ -1300,9 +1427,10 @@
   // A self-contained, looping phase sequence: AFib with rapid ventricular response, which
   // stops abruptly -> a long pause (the sick sinus fails to resume promptly) -> a couple of
   // junctional escape beats -> sinus rhythm recovers -> and after a while, back into AFib.
-  const TB_AFIB_DURATION = 3.0;
+  const TB_AFIB_DURATION = 6.0;
   const TB_AFIB_RATE_MIN = 150;
   const TB_AFIB_RATE_MAX = 190;
+  const TB_QRS_WINDOW = 0.30; // seconds — fixed window, fits safely within the fastest jittered RR (190bpm)
   const TB_PAUSE_DURATION = 3.0;
   const TB_ESCAPE_RATE = 40;
   const TB_ESCAPE_BEATS = 2;
@@ -1342,8 +1470,9 @@
         tbCurrentRR = 60/(TB_AFIB_RATE_MIN + tbNextJitter()*(TB_AFIB_RATE_MAX-TB_AFIB_RATE_MIN));
         tbNextBeatAt += tbCurrentRR;
       }
-      const frac = (t-(tbNextBeatAt-tbCurrentRR))/tbCurrentRR;
-      if(frac>=0 && frac<1) v += plainNarrowQRS(Math.min(frac,0.999));
+      const beatOnset = tbNextBeatAt - tbCurrentRR;
+      const frac = (t-beatOnset)/TB_QRS_WINDOW;
+      if(frac>=0 && frac<1) v += qrsRs(Math.min(frac,0.999));
     } else if(tbPhase==='escape'){
       if(tbNextBeatAt===0){
         tbCurrentRR = 60/TB_ESCAPE_RATE;
@@ -1455,7 +1584,17 @@
     if(t >= nextBeatAt){
       currentRR = 60/targetRate;
       nextBeatAt += currentRR;
-      rivaCurrentF = rivaPFraction(t); // freeze the P's position for this whole cycle
+      const maxRP = RHYTHMS[currentKey].maxRP;
+      let f;
+      if(maxRP!=null){
+        // dedicated 0-to-maxRP drift, independent of the shared RIVA_F_MIN/MAX fraction range
+        const phase = (t % RIVA_DRIFT_PERIOD) / RIVA_DRIFT_PERIOD;
+        const drift = 0.5 - 0.5*Math.cos(2*Math.PI*phase); // 0 to 1
+        f = (drift*maxRP) / currentRR;
+      } else {
+        f = rivaPFraction(t); // freeze the P's position for this whole cycle
+      }
+      rivaCurrentF = f;
     }
     let v = 0;
     const qrsOnset = nextBeatAt - currentRR;
@@ -1527,14 +1666,14 @@
   // capture (and normal conduction) resumes.
   const PMF3_CAPTURE_PATTERN = [true,true,true,false,false,false,false,false,false]; // 3 captured, then 6 failed, repeating
   const PMF3_SPIKE_TO_BEAT_GAP = 0.015; // seconds — brief atrial latency from spike to the P+QRS+T template
-  const PMF3_ESCAPE_HZ = 30/60; // fixed junctional escape rate
+  const PMF3_AV_DELAY = 0.16; // seconds — the device's programmed AV delay: it fires ventricular
+  // output this long after EVERY atrial event (paced or not), since it has no way of knowing
+  // the atrial pacing spike failed to capture — so every failed beat gets its own paced
+  // ventricular QRS, consistently, until atrial capture recovers.
   let pmf3PNextAt = 0;
   let pmf3CycleIdx = 0;
   let pmf3SpikeTime = null;
   let pmf3Captured = true;
-  let pmf3EscapeActive = false;
-  let pmf3EscapeNextAt = 0;
-  let pmf3EscapeLastFireAt = null;
   function samplePacemakerAtrialFailure(t){
     const atrialPeriod = 60/targetRate;
     if(pmf3PNextAt===0) pmf3PNextAt = t + atrialPeriod*0.2;
@@ -1542,14 +1681,6 @@
       const idx = pmf3CycleIdx;
       pmf3SpikeTime = pmf3PNextAt;
       pmf3Captured = pacemakerFixed ? true : PMF3_CAPTURE_PATTERN[idx];
-      if(pmf3Captured){
-        pmf3EscapeActive = false; // any captured/conducted beat suppresses the escape mechanism
-        pmf3EscapeLastFireAt = null;
-      } else if(!pmf3EscapeActive){
-        pmf3EscapeActive = true;
-        pmf3EscapeNextAt = pmf3PNextAt + 1/PMF3_ESCAPE_HZ; // first escape beat is still a full escape interval away
-        pmf3EscapeLastFireAt = null; // nothing has actually fired yet — don't render anything until it does
-      }
       pmf3CycleIdx = (idx+1) % PMF3_CAPTURE_PATTERN.length;
       pmf3PNextAt += atrialPeriod;
     }
@@ -1561,17 +1692,14 @@
         const beatStart = pmf3SpikeTime + PMF3_SPIKE_TO_BEAT_GAP;
         const bFrac = (t-beatStart)/BIGEM_SINUS_WINDOW;
         if(bFrac>=0 && bFrac<1) v += bigemSinusBeat(Math.min(bFrac,0.999));
-      }
-    }
-    if(pmf3EscapeActive){
-      const escapePeriod = 1/PMF3_ESCAPE_HZ;
-      if(t >= pmf3EscapeNextAt){
-        pmf3EscapeLastFireAt = pmf3EscapeNextAt;
-        pmf3EscapeNextAt += escapePeriod;
-      }
-      if(pmf3EscapeLastFireAt !== null){
-        const eFrac = (t-pmf3EscapeLastFireAt)/MOBITZ_QRS_WINDOW;
-        if(eFrac>=0 && eFrac<1) v += mobitzQRS(Math.min(eFrac,0.999));
+      } else {
+        // capture failed: no P, nothing to conduct — but the device still delivers
+        // ventricular pacing output right on schedule, at the end of its AV delay
+        const vSpikeTime = pmf3SpikeTime + PMF3_AV_DELAY;
+        const vSpikeFrac = (t-vSpikeTime)/PMF_SPIKE_WINDOW;
+        if(vSpikeFrac>=0 && vSpikeFrac<1) v += pacerSpike(Math.min(vSpikeFrac,0.999));
+        const qFrac = (t-(vSpikeTime+PMF2_SPIKE_QRS_GAP))/MOBITZ_QRS_WINDOW;
+        if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
       }
     }
     return v;
@@ -2649,6 +2777,10 @@
       return v + sampleTachyBrady(t);
     }
 
+    if(r.isWideQRSMystery){
+      return v + sampleWideQRSMystery(t);
+    }
+
     if(r.isPacemakerDDD){
       return v + samplePacemakerDDD(t);
     }
@@ -2775,7 +2907,6 @@
     if(currentKey==='sinusBrady') return sinusBradyBeat(f, currentRR);
     if(currentKey==='avnrt') return avnrtBeat(f);
     if(currentKey==='avrt') return avrtBeat(f, currentRR);
-    if(currentKey==='antidromic') return wideBeat(f);
     if(currentKey==='coumel') return coumelBeat(f, currentRR);
     return sinusBeat(f);
   }
@@ -2837,7 +2968,7 @@
     acc += SPEED_PX_PER_SEC*dt;
     while(acc>=1){
       simTime += SUB_STEP;
-      if((currentKey==='avnrt' || currentKey==='avrt' || currentKey==='antidromic' || currentKey==='jet' || RHYTHMS[currentKey].isAT || currentKey==='coumel' || currentKey==='svt21') && (maneuverActive || terminationPauseActive || terminationArmed)) maybeTerminate();
+      if((currentKey==='avnrt' || currentKey==='avrt' || currentKey==='jet' || RHYTHMS[currentKey].isAT || currentKey==='coumel' || currentKey==='svt21') && (maneuverActive || terminationPauseActive || terminationArmed)) maybeTerminate();
       if(maneuverActive){
         maneuverT += SUB_STEP;
         if(maneuverT > MANEUVER_DURATION && !terminationPauseActive) endManeuver();
@@ -2861,6 +2992,21 @@
     hrReadout.textContent = detectedHR !== null ? detectedHR : '--';
     if(currentKey==='flutter'){
       rhythmSubEl.textContent = 'Conducción ' + effectiveConductionRatio + ':1 · frecuencia auricular ~300/min';
+    }
+    if(currentKey==='wideQRSMystery'){
+      if(wqDissociateActive){
+        rhythmNameEl.textContent = 'Taquicardia Ventricular (revelada)';
+        rhythmSubEl.textContent = 'P disociadas, marchando independientes del QRS — adenosina no afectó al circuito';
+      } else if(wqResolved==='preexcited'){
+        rhythmNameEl.textContent = 'TSV por reentrada AV antidrómica (WPW)';
+        rhythmSubEl.textContent = 'Ritmo sinusal — PR corto, QRS preexcitado (post-maniobra)';
+      } else if(wqResolved==='normal'){
+        rhythmNameEl.textContent = 'TSV con aberrancia (sin vía accesoria de base)';
+        rhythmSubEl.textContent = 'Ritmo sinusal normal (post-maniobra)';
+      } else if(!wqTerminating){
+        rhythmNameEl.textContent = RHYTHMS.wideQRSMystery.label;
+        rhythmSubEl.textContent = RHYTHMS.wideQRSMystery.sub;
+      }
     }
     requestAnimationFrame(loop);
   }
@@ -2990,6 +3136,13 @@
       pmtMagnetNextAt = 0;
       return;
     }
+    if(currentKey==='wideQRSMystery'){
+      if(wqDissociateActive || wqTerminating || wqResolved) return;
+      wqDissociateActive = true;
+      wqDissociateStart = simTime;
+      wqDissocPNextAt = 0;
+      return;
+    }
     if(currentKey==='jet') startManeuver(true);
     else if(RHYTHMS[currentKey].isAT) startManeuver('block');
     else if(currentKey==='svt21') startManeuver('revert');
@@ -3005,21 +3158,44 @@
       pmtPvarpActive = true;
       pmtPvarpBeatCount = 0;
     }
+    else if(currentKey==='wideQRSMystery'){
+      if(wqTerminating || wqResolved) return;
+      wqDissociateActive = false;
+      wqTerminating = true;
+      wqTerminateTarget = 'preexcited';
+      wqPauseEnd = simTime + WQ_PAUSE_DURATION;
+    }
+  });
+  maneuverBtn3.addEventListener('click', ()=>{
+    if(currentKey==='wideQRSMystery'){
+      if(wqTerminating || wqResolved) return;
+      wqDissociateActive = false;
+      wqTerminating = true;
+      wqTerminateTarget = 'normal';
+      wqPauseEnd = simTime + WQ_PAUSE_DURATION;
+    }
   });
 
   // ---------- Rhythm switching / UI ----------
+  function buildCategoryTabs(){
+    categoryTabsWrap.innerHTML = '';
+    CATEGORY_ORDER.forEach(cat=>{
+      const b = document.createElement('button');
+      b.textContent = cat;
+      b.dataset.category = cat;
+      if(cat===activeCategory) b.classList.add('active');
+      b.addEventListener('click', ()=>{
+        if(activeCategory===cat) return;
+        activeCategory = cat;
+        buildTabs();
+      });
+      categoryTabsWrap.appendChild(b);
+    });
+  }
   function buildTabs(){
+    buildCategoryTabs();
     tabsWrap.innerHTML = '';
-    let lastGroup = null;
-    order.forEach(key=>{
-      const group = TAB_GROUPS[key] || null;
-      if(group && group!==lastGroup){
-        const label = document.createElement('span');
-        label.className = 'tab-group-label';
-        label.textContent = group;
-        tabsWrap.appendChild(label);
-      }
-      lastGroup = group;
+    order.filter(key => TAB_GROUPS[key]===activeCategory).forEach(key=>{
       const b = document.createElement('button');
       b.textContent = RHYTHMS[key].label.split('(')[0].trim();
       b.dataset.key = key;
@@ -3076,10 +3252,16 @@
     if(key==='doubleFire'){ dfPNextAt = 0; dfBeatIdx = 0; }
     if(key==='stLBBB'){ stLBBBNextAt = 0; stLBBBAberrant = false; stLBBBBeatIdx = 0; }
     if(key==='tachyBrady'){ tbPhase = 'afib'; tbPhaseStart = 0; tbNextBeatAt = 0; tbEscapeBeatCount = 0; }
-    if(RHYTHMS[key].isRIVA){ rivaCurrentF = (RIVA_F_MIN+RIVA_F_MAX)/2; rivaManeuverActive = false; rivaCaptured = false; }
+    if(key==='wideQRSMystery'){ wqDissociateActive = false; wqTerminating = false; wqResolved = null; wqDissocPNextAt = 0; }
+    if(RHYTHMS[key].isRIVA){
+      let f0 = (RIVA_F_MIN+RIVA_F_MAX)/2;
+      if(RHYTHMS[key].maxRP!=null) f0 = (RHYTHMS[key].maxRP/2)/(60/RHYTHMS[key].defaultRate);
+      rivaCurrentF = f0;
+      rivaManeuverActive = false; rivaCaptured = false;
+    }
     if(key==='pmt'){ pmtMagnetActive = false; pmtMagnetNextAt = 0; pmtPvarpActive = false; pmtPvarpBeatCount = 0; pmtPvarpResolved = false; }
     if(key==='pacemakerDDD'){ pmf2PNextAt = 0; pmf2CycleIdx = 0; pmf2EventTime = null; pmf2EventCaptured = false; }
-    if(key==='pacemakerAtrialFailure'){ pmf3PNextAt = 0; pmf3CycleIdx = 0; pmf3SpikeTime = null; pmf3Captured = true; pmf3EscapeActive = false; }
+    if(key==='pacemakerAtrialFailure'){ pmf3PNextAt = 0; pmf3CycleIdx = 0; pmf3SpikeTime = null; pmf3Captured = true; }
     if(key==='pacemakerAtrialUndersense'){ pmf4PNextAt = 0; pmf4CycleIdx = 0; pmf4Undersensed = false; }
     if(key==='pacemakerVentricularUndersense'){ pmf5PNextAt = 0; pmf5CycleIdx = 0; pmf5Undersensed = false; }
     if(key==='pacemakerAtrialOversense'){ pmf6PNextAt = 0; pmf6CycleIdx = 0; pmf6Oversensed = false; }
@@ -3112,7 +3294,18 @@
       terminationArmed = false;
       atBlockActive = false;
     }
-    if(key==='jet'){
+    maneuverBtn3.style.display = 'none';
+    if(key==='wideQRSMystery'){
+      maneuverBtn.style.display = '';
+      maneuverBtn.textContent = 'Adenosina — disocia (revela TV)';
+      maneuverBtnNoEffect.style.display = '';
+      maneuverBtnNoEffect.textContent = 'Adenosina — corta (preexcitación)';
+      maneuverBtn3.style.display = '';
+      maneuverBtn3.textContent = 'Adenosina — corta (normal)';
+      maneuverBtn3.style.background = 'var(--amber)';
+      maneuverBtn3.style.color = '#241a04';
+      maneuverBtn3.style.border = 'none';
+    } else if(key==='jet'){
       maneuverBtn.style.display = '';
       maneuverBtn.textContent = 'Adenosina — revierte a sinusal';
       maneuverBtnNoEffect.textContent = 'Adenosina — sin efecto';
@@ -3399,21 +3592,28 @@
     quizRestartBtn.style.display = 'none';
     startQuizQuestion();
   }
+  function updateModeToggle(){
+    simModeBtn.classList.toggle('active', !quizMode);
+    quizModeBtn.classList.toggle('active', quizMode);
+  }
   function enterQuizMode(){
     quizMode = true;
     quizPanel.style.display = '';
     startQuizSession();
-    quizModeBtn.textContent = 'Modo ejercicio (activo)';
+    updateModeToggle();
   }
   function exitQuizMode(){
     quizMode = false;
     quizPanel.style.display = 'none';
-    quizModeBtn.textContent = 'Modo ejercicio';
     removeQuizHiding();
     switchRhythm('sinus', false); // re-derives vtModeRow/rateRow/pacerAdjustRow/infoBox for the sinus tab
+    updateModeToggle();
   }
+  simModeBtn.addEventListener('click', ()=>{
+    if(quizMode) exitQuizMode();
+  });
   quizModeBtn.addEventListener('click', ()=>{
-    if(quizMode) exitQuizMode(); else enterQuizMode();
+    if(!quizMode) enterQuizMode();
   });
   quizNextBtn.addEventListener('click', ()=>{
     quizQuestionIndex++;
