@@ -52,6 +52,9 @@
   .rhythm-sub{font-size:.72rem;color:var(--ink-dim);text-align:right;margin-top:2px;}
 
   .scope-frame{position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#03060a;}
+  .ecg12-row{position:relative;border-radius:2px;overflow:hidden;background:#fdf2f0;margin-bottom:0;height:88px;}
+  .ecg12-row canvas{display:block;width:100%;height:100%;}
+  .ecg12-label{position:absolute;top:4px;left:6px;z-index:2;font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:700;color:#1a1414;letter-spacing:.05em;}
   canvas{display:block;width:100%;height:220px;}
   #scopePressure{height:110px;}
   .maneuver-flag{
@@ -110,6 +113,8 @@
   .mode-toggle{display:inline-flex;background:var(--panel-2);border:1px solid var(--border);border-radius:11px;padding:3px;gap:2px;}
   .mode-toggle-btn{font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.8rem;background:transparent;color:var(--ink-dim);border:none;padding:8px 14px;border-radius:8px;cursor:pointer;transition:.15s;white-space:nowrap;}
   .mode-toggle-btn.active{background:var(--trace);color:var(--void);}
+  #simModeBtn.active{background:var(--danger);color:#2a0505;}
+  #quizModeBtn.active{background:#4a9dff;color:#031224;}
   .mode-toggle-btn:hover:not(.active){color:var(--cyan);}
   #coffeeBtn:hover{background:#c8ecfa;}
   #coffeeMenu a:hover{background:var(--border);}
@@ -124,17 +129,10 @@
       <div style="font-size:.75rem;color:var(--ink-dim);margin-top:2px;">por Dr. Sebastián Maldonado</div>
     </div>
     <div style="display:flex;align-items:center;gap:12px;">
-      <div style="position:relative;">
-        <button type="button" id="coffeeBtn" class="whatsapp-btn" style="background:#a8ddf0;border-color:#c8ecfa;color:#0a2e3d;cursor:pointer;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-          Invitame un café
-        </button>
-        <div id="coffeeMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:8px;z-index:10;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.4);">
-          <a href="https://mpago.la/2bSsKfb" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕ $3.000</a>
-          <a href="https://mpago.la/28vma5W" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕ $5.000</a>
-          <a href="https://mpago.la/1AuQ98h" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕☕ $10.000</a>
-        </div>
-      </div>
+      <a class="whatsapp-btn" style="color:#ffffff;" href="https://wa.me/5491131860600" target="_blank" rel="noopener noreferrer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.13.82.84-3.05-.2-.31a8.2 8.2 0 0 1-1.26-4.29c0-4.54 3.7-8.24 8.25-8.24 4.54 0 8.23 3.7 8.23 8.24 0 4.55-3.7 8.15-8.24 8.15zm4.52-6.14c-.25-.12-1.47-.72-1.7-.81-.23-.08-.4-.12-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.15-.01-.31-.01-.48-.01-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.12.17 1.75 2.67 4.25 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
+        WhatsApp — Para interconsultas
+      </a>
     </div>
   </header>
 
@@ -145,10 +143,18 @@
         <div class="contact-role">Electrofisiólogo infantil · Interconsulta profesional</div>
       </div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <a class="whatsapp-btn" href="https://wa.me/5491131860600" target="_blank" rel="noopener noreferrer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2zm0 18.06h-.01a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.13.82.84-3.05-.2-.31a8.2 8.2 0 0 1-1.26-4.29c0-4.54 3.7-8.24 8.25-8.24 4.54 0 8.23 3.7 8.23 8.24 0 4.55-3.7 8.15-8.24 8.15zm4.52-6.14c-.25-.12-1.47-.72-1.7-.81-.23-.08-.4-.12-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.71-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43-.15-.01-.31-.01-.48-.01-.17 0-.44.06-.67.31-.23.25-.87.85-.87 2.08 0 1.22.89 2.4 1.01 2.57.12.17 1.75 2.67 4.25 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.14-1.18-.06-.1-.23-.16-.48-.28z"/></svg>
-          WhatsApp
-        </a>
+        <div style="position:relative;">
+          <button type="button" id="coffeeBtn" class="whatsapp-btn" style="background:#a8ddf0;border-color:#c8ecfa;color:#0a2e3d;cursor:pointer;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            Invitame un café
+          </button>
+          <div id="coffeeMenu" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:8px;z-index:10;min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.4);">
+            <div style="padding:6px 10px 10px;font-size:.85rem;line-height:1.45;color:#ffffff;border-bottom:1px solid var(--border);margin-bottom:6px;">Tu colaboración es importante para poder continuar desarrollando herramientas educativas para médicos</div>
+            <a href="https://mpago.la/2bSsKfb" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕ $3.000</a>
+            <a href="https://mpago.la/28vma5W" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕ $5.000</a>
+            <a href="https://mpago.la/1AuQ98h" target="_blank" rel="noopener noreferrer" style="display:block;padding:8px 10px;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.82rem;">☕☕☕ $10.000</a>
+          </div>
+        </div>
         <a class="whatsapp-btn" style="background:var(--panel-2);border-color:var(--border);color:var(--ink);" href="mailto:drsebastian.maldonado@gmail.com">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg>
           drsebastian.maldonado@gmail.com
@@ -170,14 +176,27 @@
         <div class="rhythm-sub" id="rhythmSub">Regular · conducción AV normal</div>
       </div>
     </div>
-    <div class="scope-frame">
+    <div class="scope-frame" id="mainScopeFrame">
       <div class="maneuver-flag" id="maneuverFlag">MANIOBRA VAGAL / ADENOSINA</div>
       <div class="warn-flag" id="warnFlag"></div>
       <canvas id="scope"></canvas>
+      <button type="button" id="ecg12Btn" style="position:absolute;bottom:8px;right:8px;z-index:3;font-family:'IBM Plex Sans',sans-serif;font-weight:600;font-size:.72rem;background:rgba(192,132,252,0.92);color:#2a0a3d;border:none;border-radius:7px;padding:7px 11px;cursor:pointer;">ECG — 12 derivaciones</button>
     </div>
     <div class="scope-frame" id="pressureFrame" style="display:none;margin-top:10px;height:110px;">
       <div class="lead-tag" style="position:absolute;top:8px;left:10px;z-index:2;">PAI (mmHg)</div>
       <canvas id="scopePressure"></canvas>
+    </div>
+    <div id="ecg12Panel" style="display:none;margin-top:14px;background:#fdf2f0;border:1px solid var(--border);border-radius:10px;padding:14px 10px 10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#7a4a4a;letter-spacing:.05em;">25 mm/s · trazado estático</span>
+        <button type="button" id="ecg12RecaptureBtn" style="font-family:'IBM Plex Sans',sans-serif;font-size:.72rem;font-weight:600;background:#1a1414;color:#fdf2f0;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;">↻ Recapturar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:0 4px;">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#7a4a4a;">-4s</span>
+        <input type="range" id="ecg12ScrubSlider" min="0" max="560" value="0" step="1" style="flex:1;accent-color:#1a1414;">
+        <span id="ecg12ScrubLabel" style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#7a4a4a;min-width:3.4em;text-align:right;">ahora</span>
+      </div>
+      <div id="ecg12Strip"></div>
     </div>
     <div id="quizPanel" style="display:none;margin-top:16px;">
       <div style="font-size:.85rem;color:var(--ink);margin-bottom:10px;">¿Qué arritmia es esta?</div>
@@ -237,6 +256,12 @@
   const canvas = document.getElementById('scope');
   const ctx = canvas.getContext('2d');
   const pressureFrame = document.getElementById('pressureFrame');
+  const mainScopeFrame = document.getElementById('mainScopeFrame');
+  const ecg12Btn = document.getElementById('ecg12Btn');
+  const ecg12Panel = document.getElementById('ecg12Panel');
+  const ecg12Strip = document.getElementById('ecg12Strip');
+  const ecg12ScrubSlider = document.getElementById('ecg12ScrubSlider');
+  const ecg12ScrubLabel = document.getElementById('ecg12ScrubLabel');
   const pcanvas = document.getElementById('scopePressure');
   const pctx = pcanvas.getContext('2d');
   const hrReadout = document.getElementById('hrReadout');
@@ -417,6 +442,7 @@
       label: 'Taquicardia ventricular', sub: 'QRS ancho · P disociada (sin relación con el QRS)',
       defaultRate: 170, rateRange: [120,240],
       isVT: true,
+      axisDeg: -60,
       info: '<b>Mecanismo:</b> taquicardia originada en el miocardio ventricular, con QRS ancho y morfología bizarra, independiente del sistema de conducción normal. La actividad auricular puede estar disociada (el nodo sinusal sigue latiendo a su propio ritmo, sin relación con el QRS) o, con menor frecuencia, conducirse en forma retrógrada 1:1 hacia la aurícula (P\' negativa, RP corto). Elegí abajo qué relación AV simular.',
       maneuverText: 'La adenosina actúa sobre el nodo AV, que no forma parte del circuito ventricular, por lo que nunca modifica la frecuencia de esta taquicardia. Con disociación AV de base, no cambia nada en absoluto. Con conducción VA 1:1 de base, bloquea transitoriamente esa conducción retrógrada — las P se disocian durante el efecto, para luego volver a conducir 1:1 — sin alterar en ningún momento la frecuencia ventricular.'
     },
@@ -491,6 +517,7 @@
       label: 'Taquicardia sinusal con aberrancia de rama izquierda dependiente de frecuencia', sub: 'PR fijo 160 ms · 5 latidos a 80/min, acelera a 130 (QRS se ensancha 6 latidos), luego frena y normaliza',
       defaultRate: 130, rateRange: [130,130],
       isSTLBBB: true,
+      axisDeg: -30,
       info: '<b>Mecanismo:</b> taquicardia sinusal (P normal, PR fijo de 160 ms) que en este modelo sigue una secuencia automática: 5 latidos estables a 80/min con QRS angosto, después una aceleración progresiva hasta 130/min — en el instante en que la alcanza, el QRS se ensancha con un patrón de <b>bloqueo de rama izquierda</b> (monofásico, ancho, con cambios secundarios del ST-T discordantes) y se mantiene así durante 6 latidos a esa frecuencia. Luego la frecuencia frena progresivamente, y el QRS se normaliza en el instante en que vuelve a caer por debajo de 130/min, retomando los 80/min estables. Es un ejemplo de <b>aberrancia dependiente de frecuencia (fase 3)</b>: al acortarse el ciclo lo suficiente, la rama izquierda todavía está en período refractario cuando le llega el impulso, y aparece el bloqueo funcional — que depende pura y exclusivamente de la frecuencia instantánea, no de una lesión fija del sistema de conducción.',
       maneuverText: null
     },
@@ -498,6 +525,8 @@
       label: 'RIVA (ritmo idioventricular acelerado)', sub: 'QRS ancho (BRI) 60-99/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
       defaultRate: 75, rateRange: [60,99],
       isRIVA: true,
+      axisDeg: -30,
+      qrsScale: 0.5,
       info: '<b>Mecanismo:</b> ritmo ventricular ectópico (o de escape acelerado) con una frecuencia de 60 a 99/min — por definición, más rápido que un ritmo idioventricular de escape (&lt;40/min) pero sin llegar a ser una taquicardia ventricular sostenida (&gt;100-120/min). El QRS es ancho, con la morfología de bloqueo de rama izquierda modelada acá. Hay <b>disociación auriculoventricular isorrítmica</b>: la frecuencia auricular es prácticamente igual a la ventricular, por lo que la P no "da la vuelta" a todo el ciclo como en una disociación con frecuencias claramente distintas — en cambio, va derivando muy lentamente de posición, siempre con un RP menor que el PR (la P siempre más cerca del QRS previo que del siguiente), pudiendo en su punto más extremo caer directamente dentro del propio QRS, para luego volver a alejarse. Suele verse en la reperfusión post-IAM, o como hallazgo benigno en corazones sanos. El botón "Maniobra taquicardizante" acelera progresivamente la frecuencia sinusal/auricular — en cuanto le gana en frecuencia al foco ventricular, el nodo sinusal vuelve a capturar el ventrículo con conducción AV normal (QRS angosto), suprimiendo el RIVA por varios segundos mientras dure el efecto. Después, la frecuencia sinusal cede y el ritmo vuelve al estado basal.',
       maneuverText: null
     },
@@ -519,6 +548,8 @@
       label: 'Ritmo de escape ventricular', sub: 'QRS ancho (BRI) 30-45/min · disociación AV isorrítmica · RP siempre < PR, variable, a veces dentro del QRS',
       defaultRate: 37, rateRange: [30,45],
       isRIVA: true, maxRP: 0.15,
+      axisDeg: -30,
+      qrsScale: 0.5,
       info: '<b>Mecanismo:</b> el nodo sinusal está lento (bradicardia), y como ni la unión AV alcanza a escapar, un foco ventricular toma el control como marcapasos de escape a su frecuencia intrínseca, más lenta todavía (30-45/min) — QRS ancho, modelado acá con patrón de bloqueo de rama izquierda, igual que en el RIVA. Hay <b>disociación auriculoventricular isorrítmica</b>: al ser las frecuencias sinusal y ventricular muy similares, la P no da la vuelta a todo el ciclo, sino que va derivando muy lentamente, siempre con un RP que fluctúa entre 0 y 150 ms, pudiendo caer directamente dentro del propio QRS. El botón "Maniobra taquicardizante" acelera la frecuencia sinusal (simulando, por ejemplo, atropina) hasta que le gana en frecuencia al escape ventricular, recapturando el ventrículo con conducción AV normal (QRS angosto) — efecto que dura varios segundos antes de volver al estado basal. Un escape tan lento como este es clínicamente más preocupante que el nodal, y suele ameritar marcapasos.',
       maneuverText: null
     },
@@ -634,6 +665,7 @@
       label: 'Marcapasos DDD — falla de captura intermitente', sub: 'P sensada + espiga → QRS ancho (3 latidos) · luego 2 espigas sin captura',
       defaultRate: 70, rateRange: [50,90],
       isPacemakerDDD: true,
+      axisDeg: -30,
       fixButton: 'output_up',
       info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — sensa correctamente la P nativa (no hay espiga auricular) y, tras el intervalo AV sensado programado, dispara una espiga que estimula el ventrículo. Durante 3 latidos la captura es efectiva (espiga seguida de un QRS ancho, típico de la estimulación desde el ápex del VD), pero en los 2 latidos siguientes la espiga no logra capturar — no hay QRS después de ellas — antes de volver a capturar normalmente. Una falla de captura intermitente como esta puede deberse a desplazamiento del cable, aumento del umbral de captura, agotamiento de batería o fibrosis en la punta del electrodo, y es un hallazgo urgente: la frecuencia ventricular efectiva depende de que exista o no un ritmo de escape espontáneo durante esos latidos fallidos.',
       maneuverText: null
@@ -642,6 +674,7 @@
       label: 'Marcapasos DDD — falla de captura auricular', sub: 'Estimulación auricular + AV intacta · falla auricular → QRS estimulado a los 160 ms igual',
       defaultRate: 75, rateRange: [50,100],
       isPacemakerAtrialFailure: true,
+      axisDeg: -30,
       fixButton: 'output_up',
       info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — estimula la aurícula (espiga seguida de P) y, con conducción AV intacta, el QRS que sigue nace de conducción intrínseca normal (angosto, sin espiga ventricular). Tras varios latidos con captura auricular efectiva, la espiga auricular deja de capturar — no hay P después de ella, y sin despolarización auricular no hay nada que conducir por el nodo AV. Pero el dispositivo no tiene forma de saber que la captura auricular falló: sigue contando su intervalo AV programado igual, y a los <b>160 ms</b> de cada espiga auricular fallida dispara su salida ventricular — apareciendo un QRS estimulado (con su propia espiga) en cada uno de esos latidos, de forma constante, hasta que la captura auricular se recupera y todo vuelve a la normalidad.',
       maneuverText: null
@@ -650,6 +683,7 @@
       label: 'Marcapasos DDD — subsensado auricular', sub: '3 P normales, luego 2 con espiga en el medio (no se sensa) · estimulación ventricular normal',
       defaultRate: 75, rateRange: [50,100],
       isPacemakerAtrialUndersense: true,
+      axisDeg: -30,
       fixButton: 'sens_down',
       info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD, programado para sensar la aurícula y estimular el ventrículo. La P nativa aparece con normalidad en todos los latidos, a la frecuencia propia del paciente. Durante 3 latidos el dispositivo la sensa correctamente y no hace nada; en los 2 latidos siguientes, en cambio, el subsensado auricular hace que no la "vea" — su temporizador auricular no se inhibe y dispara su propia espiga igual, que cae justo en el medio de la P ya ocurrida, distorsionándola — antes de volver a sensar con normalidad. La estimulación ventricular, en cambio, sigue funcionando sin cambios en todos los latidos. <b>Solución:</b> hay que hacer al marcapasos más sensible a la señal auricular — lo que, de forma un poco contraintuitiva, se logra <u>bajando</u> el valor programado de sensibilidad (en mV): cuanto más bajo el número, más sensible es el dispositivo y menores señales es capaz de detectar.',
       maneuverText: null
@@ -666,6 +700,7 @@
       label: 'Marcapasos DDD — sobresensado auricular', sub: '3 latidos normales, luego desaparecen espiga y P y aparece un QRS estimulado',
       defaultRate: 75, rateRange: [50,100],
       isPacemakerAtrialOversense: true,
+      axisDeg: -30,
       fixButton: 'sens_up',
       info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — estimula la aurícula (espiga seguida de P) con conducción AV conservada (QRS angosto) durante 3 latidos. En los 2 latidos siguientes aparece un sobresensado auricular: el dispositivo interpreta una señal espuria (miopotencial, interferencia, crosstalk) como si fuera una P real, y eso inhibe su salida — desaparecen la espiga y la P por completo, ya que la aurícula nunca llega a despolarizarse. Como el dispositivo igual "cree" que hubo un evento auricular, cuenta su intervalo AV de todos modos, y al no haber nada que conducir, termina estimulando el ventrículo — aparece un QRS ancho, estimulado, en lugar del angosto habitual. Después vuelve a la normalidad. <b>Solución:</b> a diferencia del subsensado, acá la corrección va en sentido contrario — hay que hacer al dispositivo menos sensible, <u>subiendo</u> el valor programado de sensibilidad auricular (en mV), además de buscar y corregir la fuente de la señal espuria.',
       maneuverText: null
@@ -674,6 +709,7 @@
       label: 'Marcapasos DDD — sobresensado ventricular', sub: 'P sensada normal · tras 3 latidos, desaparecen espiga y QRS durante 3 P (sobresensado)',
       defaultRate: 70, rateRange: [50,90],
       isPacemakerVentricularOversense: true,
+      axisDeg: -30,
       fixButton: 'sens_up',
       info: '<b>Mecanismo:</b> marcapasos bicameral en modo DDD — sensa correctamente la P nativa (sin espiga auricular) y estimula el ventrículo (espiga seguida de QRS ancho) tras el intervalo AV programado, ya que no hay conducción intrínseca confiable en este paciente. Durante 3 latidos funciona con normalidad. Después aparece un sobresensado ventricular: el dispositivo confunde una señal espuria (miopotencial, ruido del cable, sobresensado de la onda T) con un QRS intrínseco, y eso inhibe indebidamente su salida — durante 3 ondas P consecutivas no aparece ningún QRS ni espiga después de ellas, ya que no hay ningún respaldo de conducción propia. Es un hallazgo crítico: a diferencia del subsensado (que arriesga competir con el ritmo propio pero suele seguir estimulando), el sobresensado puede producir una asistolia real en un paciente dependiente del marcapasos. Luego se normaliza. <b>Solución:</b> identificar y eliminar la fuente de la señal espuria, y hacer al dispositivo menos sensible al ventrículo — <u>subiendo</u> el valor programado de sensibilidad ventricular (en mV) y/o ajustando los períodos de blanking.',
       maneuverText: null
@@ -682,6 +718,7 @@
       label: 'Taquicardia mediada por marcapasos (PMT)', sub: 'Estimulación ventricular sostenida · P retrógrada, negativa y pequeña, en el segmento ST',
       defaultRate: 130, rateRange: [110,180],
       isPMT: true,
+      axisDeg: -30,
       info: '<b>Mecanismo:</b> "taquicardia de asa sin fin" (endless-loop tachycardia). Un evento ventricular (una extrasístole, o incluso un latido estimulado normal) conduce en forma retrógrada por el nodo AV hacia la aurícula. El canal auricular del marcapasos sensa esa P retrógrada y, como está programado para trackear la actividad auricular sensada con estimulación ventricular, dispara otro latido estimulado tras el intervalo AV — que vuelve a conducir en forma retrógrada, re-disparando el circuito indefinidamente cerca de la frecuencia máxima de tracking programada. La pista diagnóstica es esa pequeña P retrógrada negativa escondida en el segmento ST de cada latido, fácil de pasar por alto si no se la busca específicamente. Probá las dos conductas de abajo: el <b>imán</b> sobre el generador pasa el dispositivo a modo asincrónico (estimulación auricular y ventricular fijas, ignorando todo sensado), cortando el circuito de inmediato. <b>Aumentar el PVARP</b> (período refractario auricular post-ventricular) hace que la P retrógrada deje de ser sensada — pero tarda un latido más en hacer efecto: la taquicardia se corta recién en el segundo QRS después de activarlo, quedando estimulación auricular con conducción AV intrínseca conservada (QRS angosto, sin necesidad de estimular el ventrículo).',
       maneuverText: null
     }
@@ -716,7 +753,29 @@
     canvas.height = H*dpr;
     ctx.setTransform(dpr,0,0,dpr,0,0);
     buffer = new Float32Array(W).fill(0);
+    pPhaseBuffer = new Float32Array(W).fill(-1);
+    vtQRSPhaseBuffer = new Float32Array(W).fill(-1);
+    ecg12ExtraSamples = Math.round(ECG12_EXTRA_HISTORY_SEC * SPEED_PX_PER_SEC);
+    ecg12HistSize = W + ecg12ExtraSamples;
+    ecg12HistBuffer = new Float32Array(ecg12HistSize).fill(0);
+    ecg12HistPPhase = new Float32Array(ecg12HistSize).fill(-1);
+    ecg12HistVTPhase = new Float32Array(ecg12HistSize).fill(-1);
+    ecg12HistWriteHead = 0;
+    ecg12ScrubSamples = 0;
 
+    resizePressureCanvas();
+
+    if(ecg12Visible){ resizeEcg12(); draw12Lead(); }
+  }
+  // Re-measures and reallocates ONLY the pressure (PAI) canvas/buffer, without touching the main
+  // ECG buffer, its phase buffers, or the 12-lead history buffer. Needed as its own function because
+  // switchRhythm() re-measures the pressure canvas whenever pressureFrame toggles from hidden to
+  // visible (its size is 0x0 while display:none, so it has to be re-measured once it's actually laid
+  // out) — calling the full resize() there used to wipe and restart the main scope buffer too, making
+  // the whole ECG trace (not just the pressure trace) go flat for several seconds every time a
+  // bigeminy-style rhythm was selected.
+  function resizePressureCanvas(){
+    dpr = window.devicePixelRatio || 1;
     const prect = pcanvas.getBoundingClientRect();
     PW = Math.floor(prect.width) || W;
     PH = Math.floor(prect.height) || 110;
@@ -726,8 +785,219 @@
     pressureBuffer = new Float32Array(PW).fill(0);
   }
   let buffer;
+  // pPhaseBuffer: parallel circular buffer, same indexing as `buffer`, recording (for the atrial-
+  // tachycardia rhythms only) how far into the ectopic P wave's own real-ms window each sample
+  // falls (0..1), or -1 outside it. Lets the 12-lead view redraw V1-V6's P wave with its own
+  // per-lead morphology instead of just rescaling the same DII-shaped hump.
+  let pPhaseBuffer;
+  let lastPPhase = -1; // set by sampleAt() each call, read right after in the sweep loop
+  const AT_P_WINDOW = 0.077; // seconds — matches the P segment's real-ms duration in atBeat/atPWave
+  // vtQRSPhaseBuffer: same idea as pPhaseBuffer, but for the VT (ritmo de paro) QRS — lets the
+  // 12-lead view give V1/V2 a distinct rabbit-ears QRS shape (small terminal r') from V3-V6
+  // (tall terminal R', precordial concordance) instead of just rescaling the same DII shape.
+  let vtQRSPhaseBuffer;
+  let lastVTQRSPhase = -1;
+  const VT_QRS_WINDOW = 0.195; // seconds — matches vtQRS/vtVaBeat's own qrsEnd
+  // ---------- 12-lead history (lets "Recapturar" scrub up to 2s further back than the most
+  // recent sweep window, instead of only ever grabbing the latest samples) ----------
+  const ECG12_EXTRA_HISTORY_SEC = 4;
+  let ecg12HistSize = 0;          // W + the extra 2s worth of samples, set in resize()
+  let ecg12ExtraSamples = 0;      // the extra-2s sample count itself, set in resize()
+  let ecg12HistBuffer, ecg12HistPPhase, ecg12HistVTPhase;
+  let ecg12HistWriteHead = 0;
+  let ecg12ScrubSamples = 0;      // 0 = most recent; up to ecg12ExtraSamples = furthest back
   let PW, PH, pressureBuffer;
   window.addEventListener('resize', resize);
+
+  // ---------- 12-lead derivation (simplified: Einthoven/Goldberger-style scaling of the
+  // same DII waveform, plus a typical precordial R-wave-progression profile; a handful of
+  // clinically axis-relevant rhythms override the assumed frontal-plane axis) ----------
+  const LEAD_ANGLES = { I:0, II:60, III:120, aVR:-150, aVL:-30, aVF:90 }; // hexaxial system, degrees
+  const PRECORDIAL_SCALE = { V1:-1.7, V2:-0.7, V3:1.2, V4:2.2, V5:3.4, V6:3.0 }; // normal R-wave progression, relative to DII (V1-V3 boosted further)
+  const LEAD_ORDER = ['I','II','III','aVR','aVL','aVF','V1','V2','V3','V4','V5','V6'];
+  function limbLeadScale(leadAngle, axisDeg){
+    const rad = Math.PI/180;
+    // Normalize by the MAGNITUDE of DII's own projection (not its signed value): this keeps every
+    // other lead's relative polarity textbook-correct for the assumed axis, while DII itself is
+    // separately pinned to exactly 1.0 below (it must always match the reference waveform as drawn
+    // on the main single-lead monitor, whatever the assumed axis).
+    const refMag = Math.abs(Math.cos((axisDeg-60)*rad));
+    // Floor raised from 0.15 to 0.4: when the assumed axis sits ~90° from DII (axisDeg=-30, used by
+    // the wide-QRS LBBB-pattern rhythms), DII's own projection is ~0 — a low floor let other leads'
+    // scale (relative to DII pinned at 1.0) blow up past 6x, clipping the trace off the 12-lead rows.
+    const safeMag = refMag<0.4 ? 0.4 : refMag;
+    return Math.cos((axisDeg-leadAngle)*rad) / safeMag;
+  }
+  function getLeadScales(){
+    const axisDeg = (RHYTHMS[currentKey] && RHYTHMS[currentKey].axisDeg!=null) ? RHYTHMS[currentKey].axisDeg : 60;
+    const scales = {};
+    for(const lead in LEAD_ANGLES) scales[lead] = limbLeadScale(LEAD_ANGLES[lead], axisDeg);
+    scales.II = 1.2; // pinned to a fixed display size (always matches the main monitor's DII shape, just drawn taller)
+    scales.aVL = scales.I; // aVL pinned to mirror DI's own scale (same morphology/concordance as lead I)
+    if(currentKey==='vt') scales.II = scales.III; // VT (ritmo de paro): DII made to look like DIII
+    for(const lead in PRECORDIAL_SCALE) scales[lead] = PRECORDIAL_SCALE[lead];
+    return scales;
+  }
+  let ecg12Visible = false;
+  let ecg12Canvases = [], ecg12Ctxs = [], ecg12Widths = [], ecg12Heights = [];
+  function buildEcg12Panel(){
+    ecg12Strip.innerHTML = '';
+    ecg12Canvases = []; ecg12Ctxs = [];
+    LEAD_ORDER.forEach(lead=>{
+      const row = document.createElement('div');
+      row.className = 'ecg12-row';
+      const label = document.createElement('div');
+      label.className = 'ecg12-label';
+      label.textContent = lead;
+      const cv = document.createElement('canvas');
+      row.appendChild(label);
+      row.appendChild(cv);
+      ecg12Strip.appendChild(row);
+      ecg12Canvases.push(cv);
+      ecg12Ctxs.push(cv.getContext('2d'));
+    });
+  }
+  function resizeEcg12(){
+    ecg12Widths = []; ecg12Heights = [];
+    ecg12Canvases.forEach((cv,i)=>{
+      const rect = cv.getBoundingClientRect();
+      const w = Math.floor(rect.width), h = Math.floor(rect.height);
+      cv.width = w*dpr; cv.height = h*dpr;
+      ecg12Ctxs[i].setTransform(dpr,0,0,dpr,0,0);
+      ecg12Widths.push(w); ecg12Heights.push(h);
+    });
+  }
+  // Atrial-tachycardia P wave, precordial-lead-specific morphology (independent of the generic
+  // axis-based lead scaling): V1 biphasic -/+ (initial negative deflection, terminal positive),
+  // V2-V6 upright positive — overrides the default same-shape-as-DII rendering for these leads.
+  function atV1PShape(phase){
+    return interpTemplate([[0,0],[0.35,-0.15],[0.65,0.15],[1,0]], phase);
+  }
+  function atV2to6PShape(phase){
+    return interpTemplate([[0,0],[0.5,0.15],[1,0]], phase);
+  }
+  const AT_P_PRECORDIAL_LEADS = { V1:atV1PShape, V2:atV2to6PShape, V3:atV2to6PShape, V4:atV2to6PShape, V5:atV2to6PShape, V6:atV2to6PShape };
+  // VT (ritmo de paro) QRS, precordial-lead-specific morphology: V1/V2 "Rsr'" (tall initial R,
+  // s dip, SMALL terminal r'); V3/V4 "RsR'" (tall initial R, s dip, TALL terminal R' — precordial
+  // concordance); V5/V6 "RS" (tall R, deep S, no terminal r'/R' at all) — overrides the default
+  // same-shape-as-DII rendering for these leads.
+  function vtV1V2Shape(phase){
+    return interpTemplate([[0,0],[0.28,0.90],[0.44,-0.18],[0.67,0.35],[0.85,0],[1,0]], phase);
+  }
+  function vtV3V4Shape(phase){
+    return interpTemplate([[0,0],[0.28,0.90],[0.44,-0.18],[0.67,1.05],[0.85,0],[1,0]], phase);
+  }
+  function vtV5V6Shape(phase){
+    return interpTemplate([[0,0],[0.28,0.90],[0.55,-0.30],[0.85,0],[1,0]], phase);
+  }
+  // aVR "rSr'" (small initial r, deep S, small terminal r'); DI and aVL monophasic "R" (single
+  // tall positive hump, no S or notch) — same idea, extended to these limb leads.
+  function vtAVRShape(phase){
+    return interpTemplate([[0,0],[0.15,0.20],[0.30,0],[0.50,-0.90],[0.70,0],[0.82,0.20],[0.95,0],[1,0]], phase);
+  }
+  function vtMonophasicRShape(phase){
+    return interpTemplate([[0,0],[0.35,0.90],[0.65,0.90],[0.85,0],[1,0]], phase);
+  }
+  const VT_QRS_LEAD_SHAPES = {
+    I:vtMonophasicRShape, aVL:vtMonophasicRShape, aVR:vtAVRShape,
+    V1:vtV1V2Shape, V2:vtV1V2Shape, V3:vtV3V4Shape, V4:vtV3V4Shape, V5:vtV5V6Shape, V6:vtV5V6Shape
+  };
+  function draw12Lead(){
+    if(!buffer || !ecg12HistBuffer || !ecg12Ctxs.length) return;
+    const scales = getLeadScales();
+    const atOverride = RHYTHMS[currentKey] && (RHYTHMS[currentKey].isAT || RHYTHMS[currentKey].isATVariable || RHYTHMS[currentKey].isSVT21 || RHYTHMS[currentKey].isCoumel);
+    const vtOverride = currentKey==='vt'; // only the "Ritmo de paro" VT tab, not the Taquicardia one
+    // static snapshot: freeze a copy of a W-samples-wide window from the extended history buffer,
+    // ending `ecg12ScrubSamples` samples before "now" (0 = the most recent window, same as before;
+    // up to ecg12ExtraSamples = up to ECG12_EXTRA_HISTORY_SEC further back) — so the trace no
+    // longer moves once drawn, and can be scrubbed back without losing anything to overwrite.
+    const snapshot = new Float32Array(W);
+    const pPhaseSnapshot = new Float32Array(W);
+    const vtPhaseSnapshot = new Float32Array(W);
+    if(ecg12HistBuffer){
+      const endIdx = (ecg12HistWriteHead - 1 - ecg12ScrubSamples + ecg12HistSize*2) % ecg12HistSize;
+      for(let i=0;i<W;i++){
+        const idx = (endIdx - (W-1) + i + ecg12HistSize*2) % ecg12HistSize;
+        snapshot[i] = ecg12HistBuffer[idx];
+        pPhaseSnapshot[i] = ecg12HistPPhase[idx];
+        vtPhaseSnapshot[i] = ecg12HistVTPhase[idx];
+      }
+    }
+    LEAD_ORDER.forEach((lead,li)=>{
+      const c = ecg12Ctxs[li];
+      const cw = ecg12Widths[li], ch = ecg12Heights[li];
+      if(!cw || !ch) return;
+      // paper background
+      c.fillStyle = '#fdf2f0';
+      c.fillRect(0,0,cw,ch);
+      // small-box grid (~1mm) + bold every 5th box, classic ECG paper
+      const smallBox = Math.max(4, cw/90);
+      c.lineWidth = 1;
+      c.strokeStyle = 'rgba(200,110,120,0.25)';
+      c.beginPath();
+      for(let x=0;x<cw;x+=smallBox){ c.moveTo(x,0); c.lineTo(x,ch); }
+      for(let y=0;y<ch;y+=smallBox){ c.moveTo(0,y); c.lineTo(cw,y); }
+      c.stroke();
+      c.strokeStyle = 'rgba(200,110,120,0.5)';
+      c.beginPath();
+      for(let x=0;x<cw;x+=smallBox*5){ c.moveTo(x,0); c.lineTo(x,ch); }
+      for(let y=0;y<ch;y+=smallBox*5){ c.moveTo(0,y); c.lineTo(cw,y); }
+      c.stroke();
+      // static trace
+      const midY = ch*0.55;
+      const amp = ch*0.34;
+      const scale = scales[lead];
+      const pShapeFn = (atOverride && AT_P_PRECORDIAL_LEADS[lead]) ? AT_P_PRECORDIAL_LEADS[lead] : null;
+      const vtShapeFn = (vtOverride && VT_QRS_LEAD_SHAPES[lead]) ? VT_QRS_LEAD_SHAPES[lead] : null;
+      c.lineWidth = 1.6;
+      c.strokeStyle = '#1a1414';
+      c.beginPath();
+      let started = false;
+      for(let i=0;i<cw;i++){
+        const bufIdx = Math.floor(i*W/cw);
+        const pPhase = pPhaseSnapshot[bufIdx];
+        const vtPhase = vtPhaseSnapshot[bufIdx];
+        let v;
+        if(vtShapeFn && vtPhase>=0) v = vtShapeFn(vtPhase);
+        else if(pShapeFn && pPhase>=0) v = pShapeFn(pPhase);
+        else v = snapshot[bufIdx]*scale;
+        const y = midY - v*amp;
+        if(!started){ c.moveTo(i,y); started=true; } else { c.lineTo(i,y); }
+      }
+      c.stroke();
+    });
+  }
+  buildEcg12Panel();
+  function updateEcg12ScrubLabel(){
+    ecg12ScrubLabel.textContent = ecg12ScrubSamples===0 ? 'ahora' : ('-' + (ecg12ScrubSamples/SPEED_PX_PER_SEC).toFixed(1) + 's');
+  }
+  function resetEcg12Scrub(){
+    ecg12ScrubSamples = 0;
+    ecg12ScrubSlider.max = String(ecg12ExtraSamples);
+    ecg12ScrubSlider.value = '0';
+    updateEcg12ScrubLabel();
+  }
+  ecg12Btn.addEventListener('click', ()=>{
+    ecg12Visible = !ecg12Visible;
+    ecg12Panel.style.display = ecg12Visible ? '' : 'none';
+    ecg12Btn.textContent = ecg12Visible ? 'ECG — 12 derivaciones ✕' : 'ECG — 12 derivaciones';
+    if(ecg12Visible){
+      resizeEcg12();
+      resetEcg12Scrub();
+      draw12Lead();
+    }
+  });
+  const ecg12RecaptureBtn = document.getElementById('ecg12RecaptureBtn');
+  ecg12RecaptureBtn.addEventListener('click', ()=>{
+    resizeEcg12();
+    resetEcg12Scrub();
+    draw12Lead();
+  });
+  ecg12ScrubSlider.addEventListener('input', ()=>{
+    ecg12ScrubSamples = Math.min(parseInt(ecg12ScrubSlider.value,10)||0, ecg12ExtraSamples);
+    updateEcg12ScrubLabel();
+    draw12Lead();
+  });
 
   // ---------- ECG waveform generation ----------
   // Beat template: piecewise points (fraction of beat, amplitude -1..1), interpolated.
@@ -1221,6 +1491,19 @@
       [0.55,0],[0.68,0.15],[0.80,0.15],[0.92,0],[1,0]
     ], frac);
   }
+  // Same overall window/timing as mobitz2QRS (fixed 0.32s), but with a single wide, monophasic
+  // LBBB-pattern hump instead of the notched double peak — used for genuinely device-PACED
+  // (RV-apex stimulated) ventricular beats, which classically produce an LBBB-morphology QRS.
+  function pacedLBBBQRS(frac){
+    // amplitude kept modest (~40% of a normal QRS peak) so it still fits unclipped in V5/V6,
+    // the tallest rows in the 12-lead view (those precordial leads carry a fixed 3-3.4x scale
+    // regardless of rhythm)
+    return interpTemplate([
+      [0,0],[0.05,0],
+      [0.144,0.30],[0.253,0.34],[0.3625,0.22],[0.472,0],
+      [0.55,0],[0.68,0.15],[0.80,0.15],[0.92,0],[1,0]
+    ], frac);
+  }
   function sampleMobitz2(t){
     const atrialPeriod = 60/targetRate;
     if(mobitz2PNextAt===0) mobitz2PNextAt = t + atrialPeriod*0.2;
@@ -1309,6 +1592,10 @@
     let v = 0;
     const pPhase = Math.min(Math.max((t-(svt21PNextAt-atrialPeriod))/atrialPeriod, 0), 1);
     v += svt21PWave(pPhase, atrialPeriod);
+    // same real-ms P window/shape as the 1:1 atrial tachycardia — track progress through it so
+    // the 12-lead view gives V1-V6 the same P morphology here too
+    const pElapsed = pPhase*atrialPeriod;
+    if(pElapsed>=0 && pElapsed<AT_P_WINDOW) lastPPhase = pElapsed/AT_P_WINDOW;
     if(svt21QRSPending!==null){
       const qFrac = (t-svt21QRSPending)/MOBITZ_QRS_WINDOW;
       if(qFrac>=0 && qFrac<1) v += mobitzQRS(qFrac);
@@ -1345,6 +1632,10 @@
     let v = 0;
     const pPhase = Math.min(Math.max((t-(atVarPNextAt-atrialPeriod))/atrialPeriod, 0), 1);
     v += svt21PWave(pPhase, atrialPeriod);
+    // same real-ms P window as the 1:1 atrial tachycardia (svt21PWave shares its exact shape) —
+    // track progress through it so the 12-lead view can give V1-V6 the same P morphology there too
+    const pElapsed = pPhase*atrialPeriod;
+    if(pElapsed>=0 && pElapsed<AT_P_WINDOW) lastPPhase = pElapsed/AT_P_WINDOW;
     if(atVarQRSPending!==null){
       const qFrac = (t-atVarQRSPending)/MOBITZ_QRS_WINDOW;
       if(qFrac>=0 && qFrac<1) v += mobitzQRS(qFrac);
@@ -1395,8 +1686,8 @@
     return interpTemplate(absToFrac([
       [0,0],[0.03,0],[0.06,0.10],[0.09,0], // same sinus P wave
       [0.16,0], // same fixed 160ms PR — QRS onset
-      [0.19,0.75],[0.225,0.85],[0.26,0.55],[0.295,0], // wide, monophasic LBBB QRS (~135ms)
-      [0.32,0],[0.36,-0.12],[0.40,-0.12],[0.43,0], // discordant (negative) secondary ST-T change
+      [0.184,0.375],[0.212,0.425],[0.24,0.275],[0.268,0], // wide, monophasic LBBB QRS (~108ms, narrowed; amplitude halved so it fits the 12-lead rows unclipped)
+      [0.293,0],[0.333,-0.12],[0.373,-0.12],[0.403,0], // discordant (negative) secondary ST-T change
       [rr,0]
     ], rr), frac);
   }
@@ -1523,9 +1814,10 @@
   function rivaPWave(frac){
     return interpTemplate([[0,0],[0.33,0],[0.67,0.10],[1,0]], frac);
   }
-  function rivaQRS(frac, rr){
+  function rivaQRS(frac, rr, qrsScale){
+    const s = qrsScale==null ? 1 : qrsScale;
     return interpTemplate(absToFrac([
-      [0,0],[0.03,0.75],[0.065,0.85],[0.10,0.55],[0.135,0], // wide, monophasic LBBB QRS (~135ms)
+      [0,0],[0.03,0.75*s],[0.065,0.85*s],[0.10,0.55*s],[0.135,0], // wide, monophasic LBBB QRS (~135ms)
       [0.16,0],[0.20,-0.12],[0.24,-0.12],[0.27,0], // discordant T
       [rr,0]
     ], rr), frac);
@@ -1600,7 +1892,7 @@
     const qrsOnset = nextBeatAt - currentRR;
     const qrsFrac = (t-qrsOnset)/currentRR;
     const qrsFn = RHYTHMS[currentKey].narrowQRS ? rivaQRSNarrow : rivaQRS;
-    if(qrsFrac>=0 && qrsFrac<1) v += qrsFn(Math.min(qrsFrac,0.999), currentRR);
+    if(qrsFrac>=0 && qrsFrac<1) v += qrsFn(Math.min(qrsFrac,0.999), currentRR, RHYTHMS[currentKey].qrsScale);
 
     const pOnset = qrsOnset + rivaCurrentF*currentRR;
     const pFrac = (t-pOnset)/RIVA_P_DURATION;
@@ -1648,7 +1940,7 @@
       if(spikeFrac>=0 && spikeFrac<1) v += pacerSpike(Math.min(spikeFrac,0.999));
       if(pmf2EventCaptured){
         const qFrac = (evElapsed-PMF2_SPIKE_QRS_GAP)/MOBITZ_QRS_WINDOW;
-        if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+        if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
       }
     }
     return v;
@@ -1699,7 +1991,7 @@
         const vSpikeFrac = (t-vSpikeTime)/PMF_SPIKE_WINDOW;
         if(vSpikeFrac>=0 && vSpikeFrac<1) v += pacerSpike(Math.min(vSpikeFrac,0.999));
         const qFrac = (t-(vSpikeTime+PMF2_SPIKE_QRS_GAP))/MOBITZ_QRS_WINDOW;
-        if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+        if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
       }
     }
     return v;
@@ -1747,7 +2039,7 @@
     const spikeFrac = evElapsed/PMF_SPIKE_WINDOW;
     if(spikeFrac>=0 && spikeFrac<1) v += pacerSpike(Math.min(spikeFrac,0.999));
     const qFrac = (evElapsed-PMF2_SPIKE_QRS_GAP)/MOBITZ_QRS_WINDOW;
-    if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+    if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
 
     return v;
   }
@@ -1829,7 +2121,7 @@
       const spikeFrac = evElapsed/PMF_SPIKE_WINDOW;
       if(spikeFrac>=0 && spikeFrac<1) v += pacerSpike(Math.min(spikeFrac,0.999));
       const qFrac = (evElapsed-PMF2_SPIKE_QRS_GAP)/MOBITZ_QRS_WINDOW;
-      if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+      if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
     }
     return v;
   }
@@ -1865,7 +2157,7 @@
       const spikeFrac = evElapsed/PMF_SPIKE_WINDOW;
       if(spikeFrac>=0 && spikeFrac<1) v += pacerSpike(Math.min(spikeFrac,0.999));
       const qFrac = (evElapsed-PMF2_SPIKE_QRS_GAP)/MOBITZ_QRS_WINDOW;
-      if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+      if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
     }
     // else: oversensed — nothing else added, the P stands alone with no ventricular response
 
@@ -1880,8 +2172,8 @@
   // in the ST segment of each beat — the key diagnostic clue, easy to miss unless specifically
   // sought. No adenosine/vagal maneuver is modeled here (see info text).
   function pmtBeat(frac){
-    // wide paced QRS+T, with a small negative retrograde P added around the ST segment
-    return mobitz2QRS(frac) + interpTemplate([[0,0],[0.47,0],[0.495,-0.06],[0.52,-0.06],[0.545,0],[1,0]], frac);
+    // wide paced QRS+T (LBBB pattern), with a small negative retrograde P added around the ST segment
+    return pacedLBBBQRS(frac) + interpTemplate([[0,0],[0.47,0],[0.495,-0.06],[0.52,-0.06],[0.545,0],[1,0]], frac);
   }
   // ---------- PMT maneuvers: Magnet / Aumentar PVARP ----------
   // Magnet: converts the device to fixed-rate asynchronous pacing (both chambers paced,
@@ -1914,7 +2206,7 @@
     const vSpikeFrac = (t-onset-PMT_MAGNET_AV_DELAY)/PMF_SPIKE_WINDOW;
     if(vSpikeFrac>=0 && vSpikeFrac<1) v += pacerSpike(Math.min(vSpikeFrac,0.999));
     const qFrac = (t-onset-PMT_MAGNET_AV_DELAY-PMF2_SPIKE_QRS_GAP)/MOBITZ_QRS_WINDOW;
-    if(qFrac>=0 && qFrac<1) v += mobitz2QRS(Math.min(qFrac,0.999));
+    if(qFrac>=0 && qFrac<1) v += pacedLBBBQRS(Math.min(qFrac,0.999));
     return v;
   }
   function samplePMT(t){
@@ -2708,11 +3000,18 @@
       const qrsFn = r.aberrantQRS ? atAberrantQRS : atQRS;
       if(atEffectiveRatio<=1){
         // 1:1 conduction: P always precedes its own QRS in the same cycle — never dissociated
-        if(frac>=0 && frac<1) v += beatFn(Math.min(frac,0.999), currentRR);
+        if(frac>=0 && frac<1){
+          v += beatFn(Math.min(frac,0.999), currentRR);
+          const pElapsed = t - (nextBeatAt-currentRR);
+          if(pElapsed>=0 && pElapsed<AT_P_WINDOW) lastPPhase = pElapsed/AT_P_WINDOW;
+        }
       } else {
         // AV block active: atrial focus keeps discharging at its true rate while only
         // some beats conduct — the extra, unconducted P waves are the intended teaching point here
         v += atPWave(t, currentRR);
+        const atrialPeriod = 1/atAtrialHz();
+        const pElapsed = t % atrialPeriod;
+        if(pElapsed>=0 && pElapsed<AT_P_WINDOW) lastPPhase = pElapsed/AT_P_WINDOW;
         if(frac>=0 && frac<1) v += qrsFn(Math.min(frac,0.999), currentRR);
       }
       return v;
@@ -2729,10 +3028,18 @@
         // permanent (adenosine changes nothing); in 'retro' mode this only appears transiently,
         // while the maneuver is active, revealing the dissociation without altering the VT rate
         v += vtDissocPWave(t);
-        if(frac>=0 && frac<1) v += vtQRS(Math.min(frac,0.999), currentRR);
+        if(frac>=0 && frac<1){
+          v += vtQRS(Math.min(frac,0.999), currentRR);
+          const qrsElapsed = frac*currentRR;
+          if(qrsElapsed>=0 && qrsElapsed<VT_QRS_WINDOW) lastVTQRSPhase = qrsElapsed/VT_QRS_WINDOW;
+        }
       } else {
         // 1:1 VA conduction: retrograde P' locked immediately after its own QRS
-        if(frac>=0 && frac<1) v += vtVaBeat(Math.min(frac,0.999), currentRR);
+        if(frac>=0 && frac<1){
+          v += vtVaBeat(Math.min(frac,0.999), currentRR);
+          const qrsElapsed = frac*currentRR;
+          if(qrsElapsed>=0 && qrsElapsed<VT_QRS_WINDOW) lastVTQRSPhase = qrsElapsed/VT_QRS_WINDOW;
+        }
       }
       return v;
     }
@@ -2907,7 +3214,13 @@
     if(currentKey==='sinusBrady') return sinusBradyBeat(f, currentRR);
     if(currentKey==='avnrt') return avnrtBeat(f);
     if(currentKey==='avrt') return avrtBeat(f, currentRR);
-    if(currentKey==='coumel') return coumelBeat(f, currentRR);
+    if(currentKey==='coumel'){
+      // same real-ms P window/shape as the atrial tachycardia — track progress through it so
+      // the 12-lead view gives V1-V6 the same P morphology here too
+      const pElapsed = f*currentRR;
+      if(pElapsed>=0 && pElapsed<AT_P_WINDOW) lastPPhase = pElapsed/AT_P_WINDOW;
+      return coumelBeat(f, currentRR);
+    }
     return sinusBeat(f);
   }
 
@@ -2973,10 +3286,20 @@
         maneuverT += SUB_STEP;
         if(maneuverT > MANEUVER_DURATION && !terminationPauseActive) endManeuver();
       }
+      lastPPhase = -1;
+      lastVTQRSPhase = -1;
       const v = sampleAt(simTime);
       updateHRDetector(simTime, v);
       buffer[writeHead] = v;
+      pPhaseBuffer[writeHead] = lastPPhase;
+      vtQRSPhaseBuffer[writeHead] = lastVTQRSPhase;
       writeHead = (writeHead+1)%W;
+      if(ecg12HistBuffer){
+        ecg12HistBuffer[ecg12HistWriteHead] = v;
+        ecg12HistPPhase[ecg12HistWriteHead] = lastPPhase;
+        ecg12HistVTPhase[ecg12HistWriteHead] = lastVTQRSPhase;
+        ecg12HistWriteHead = (ecg12HistWriteHead+1)%ecg12HistSize;
+      }
       if(pressureBuffer){
         const r = RHYTHMS[currentKey];
         const pv = r.pvcPulseAmp!=null ? samplePressureBigeminy(simTime, r.pvcPulseAmp, r.pvcCouplingAbs) : 0;
@@ -3224,7 +3547,7 @@
     const wasPressureHidden = pressureFrame.style.display === 'none';
     pressureFrame.style.display = showPressure ? '' : 'none';
     if(showPressure && wasPressureHidden){
-      setTimeout(resize, 0); // let the layout settle before measuring the now-visible canvas
+      setTimeout(resizePressureCanvas, 0); // let the layout settle before measuring the now-visible canvas (pressure canvas only — leaves the main ECG buffer running uninterrupted)
     }
     if(!fromTermination){
       flutterCVPhase = null;
@@ -3495,6 +3818,17 @@
     infoBox.style.display = 'none';
     pacerAdjustRow.style.display = 'none';
     controlsEl.style.display = 'none';
+    // Modo ejercicio quizzes from the static 12-lead ECG only — no live single-lead monitor,
+    // same as reading a real printed strip — so the animated scope is hidden and the 12-lead
+    // panel forced open (its own "ECG — 12 derivaciones" toggle button is hidden along with it).
+    // switchRhythm() (called right before this, to load the question's rhythm) may have just made
+    // pressureFrame visible again on its own — for a bigeminy-type question, it always does — so it
+    // has to be force-hidden here too, or the PAI trace panel is left dangling between the hidden
+    // scope and the 12-lead strip during a quiz question.
+    mainScopeFrame.style.display = 'none';
+    pressureFrame.style.display = 'none';
+    ecg12Visible = true;
+    ecg12Panel.style.display = '';
   }
   function removeQuizHiding(){
     rhythmNameEl.style.display = '';
@@ -3504,6 +3838,10 @@
     maneuverRow.style.display = '';
     infoToggleBtn.style.display = '';
     controlsEl.style.display = '';
+    mainScopeFrame.style.display = '';
+    ecg12Visible = false;
+    ecg12Panel.style.display = 'none';
+    ecg12Btn.textContent = 'ECG — 12 derivaciones';
     // vtModeRow / rateRow / pacerAdjustRow / infoBox are re-derived from the rhythm itself
     // inside switchRhythm, so that call (right after this) sets them correctly on its own.
   }
@@ -3522,6 +3860,29 @@
     quizCorrectKey = quizQuestionKeys[quizQuestionIndex];
     switchRhythm(quizCorrectKey, false);
     applyQuizHiding();
+    resizeEcg12();
+    // The visible 12-lead window is W samples wide (same span as the main monitor's sweep,
+    // ~W/SPEED_PX_PER_SEC seconds) and switchRhythm doesn't clear the sweep buffer — so the
+    // capture has to wait for a FULL buffer refill, not just a moment, or its older (left) portion
+    // would still show a tail of the previous question's rhythm while only the newest part is
+    // correct. Blank the canvases immediately so nothing stale is shown while that plays out.
+    ecg12Ctxs.forEach((c,i)=>{
+      const cw = ecg12Widths[i], ch = ecg12Heights[i];
+      if(!cw || !ch) return;
+      c.fillStyle = '#fdf2f0';
+      c.fillRect(0,0,cw,ch);
+    });
+    const flushDelayMs = Math.ceil((W/SPEED_PX_PER_SEC)*1000) + 150;
+    setTimeout(()=>{
+      if(quizMode && quizCorrectKey === quizQuestionKeys[quizQuestionIndex]){
+        resetEcg12Scrub();
+        draw12Lead();
+        // Only now, once the captured ECG is actually the real (fully-flushed) one, let the
+        // person choose an answer — the options started disabled precisely so they can't answer
+        // off the blank/stale placeholder shown while the buffer was still refilling.
+        [...quizOptions.children].forEach(b=>{ b.disabled = false; });
+      }
+    }, flushDelayMs);
     quizAnswered = false;
     quizFeedback.innerHTML = '';
     quizNextBtn.style.display = 'none';
@@ -3549,6 +3910,7 @@
       b.style.color = 'var(--ink)';
       b.style.border = '1px solid var(--border)';
       b.textContent = label;
+      b.disabled = true; // re-enabled once the 12-lead capture actually settles, see flushDelayMs below
       b.addEventListener('click', ()=>handleQuizAnswer(label, correctLabel, b));
       quizOptions.appendChild(b);
     });
