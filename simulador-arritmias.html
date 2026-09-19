@@ -3272,6 +3272,50 @@
   const SUB_STEP = 1/SPEED_PX_PER_SEC; // seconds represented by one pixel column
   let lastTs = null;
 
+  // Advances the simulation by exactly one sample (one sweep pixel-column): computes the next
+  // point, writes it into every circular buffer, and advances their write cursors. This is the
+  // single unit of work the real-time loop() performs once per accumulated pixel — factored out
+  // so prefillBuffer() (below) can run it many times synchronously, instead of only ever once per
+  // animation frame.
+  function advanceOneSample(){
+    simTime += SUB_STEP;
+    if((currentKey==='avnrt' || currentKey==='avrt' || currentKey==='jet' || RHYTHMS[currentKey].isAT || currentKey==='coumel' || currentKey==='svt21') && (maneuverActive || terminationPauseActive || terminationArmed)) maybeTerminate();
+    if(maneuverActive){
+      maneuverT += SUB_STEP;
+      if(maneuverT > MANEUVER_DURATION && !terminationPauseActive) endManeuver();
+    }
+    lastPPhase = -1;
+    lastVTQRSPhase = -1;
+    const v = sampleAt(simTime);
+    updateHRDetector(simTime, v);
+    buffer[writeHead] = v;
+    pPhaseBuffer[writeHead] = lastPPhase;
+    vtQRSPhaseBuffer[writeHead] = lastVTQRSPhase;
+    writeHead = (writeHead+1)%W;
+    if(ecg12HistBuffer){
+      ecg12HistBuffer[ecg12HistWriteHead] = v;
+      ecg12HistPPhase[ecg12HistWriteHead] = lastPPhase;
+      ecg12HistVTPhase[ecg12HistWriteHead] = lastVTQRSPhase;
+      ecg12HistWriteHead = (ecg12HistWriteHead+1)%ecg12HistSize;
+    }
+    if(pressureBuffer){
+      const r = RHYTHMS[currentKey];
+      const pv = r.pvcPulseAmp!=null ? samplePressureBigeminy(simTime, r.pvcPulseAmp, r.pvcCouplingAbs) : 0;
+      pressureBuffer[pWriteHead] = pv;
+      pWriteHead = (pWriteHead+1)%PW;
+    }
+  }
+  // Instantly fills every sweep buffer with real samples of whatever rhythm is now selected,
+  // instead of the old buffer.fill(0) + waiting a full lap of real time for the trace to sweep
+  // back across and overwrite that flat line. Called right after a (non-termination) rhythm
+  // switch, so the monitor shows the newly selected rhythm immediately and in full, with no
+  // isoelectric flash and no mid-lap "still catching up" period.
+  function prefillBuffer(){
+    const count = ecg12HistBuffer ? ecg12HistSize : W;
+    for(let i=0;i<count;i++) advanceOneSample();
+    acc = 0; // the burst above already accounts for that time; don't let the next real frame double it up
+  }
+
   function loop(ts){
     if(lastTs===null) lastTs = ts;
     let dt = (ts-lastTs)/1000;
@@ -3280,32 +3324,7 @@
 
     acc += SPEED_PX_PER_SEC*dt;
     while(acc>=1){
-      simTime += SUB_STEP;
-      if((currentKey==='avnrt' || currentKey==='avrt' || currentKey==='jet' || RHYTHMS[currentKey].isAT || currentKey==='coumel' || currentKey==='svt21') && (maneuverActive || terminationPauseActive || terminationArmed)) maybeTerminate();
-      if(maneuverActive){
-        maneuverT += SUB_STEP;
-        if(maneuverT > MANEUVER_DURATION && !terminationPauseActive) endManeuver();
-      }
-      lastPPhase = -1;
-      lastVTQRSPhase = -1;
-      const v = sampleAt(simTime);
-      updateHRDetector(simTime, v);
-      buffer[writeHead] = v;
-      pPhaseBuffer[writeHead] = lastPPhase;
-      vtQRSPhaseBuffer[writeHead] = lastVTQRSPhase;
-      writeHead = (writeHead+1)%W;
-      if(ecg12HistBuffer){
-        ecg12HistBuffer[ecg12HistWriteHead] = v;
-        ecg12HistPPhase[ecg12HistWriteHead] = lastPPhase;
-        ecg12HistVTPhase[ecg12HistWriteHead] = lastVTQRSPhase;
-        ecg12HistWriteHead = (ecg12HistWriteHead+1)%ecg12HistSize;
-      }
-      if(pressureBuffer){
-        const r = RHYTHMS[currentKey];
-        const pv = r.pvcPulseAmp!=null ? samplePressureBigeminy(simTime, r.pvcPulseAmp, r.pvcCouplingAbs) : 0;
-        pressureBuffer[pWriteHead] = pv;
-        pWriteHead = (pWriteHead+1)%PW;
-      }
+      advanceOneSample();
       acc -= 1;
     }
 
@@ -3610,13 +3629,17 @@
     else { warnFlag.classList.remove('show'); }
     conductionCounter = 0;
     nextBeatAt = simTime + 0.3;
-    if(buffer && !fromTermination) buffer.fill(0);
     if(!fromTermination){
+      maneuverActive = false; // a switch away mid-maneuver cancels it outright, so prefillBuffer() below runs from a clean baseline
       maneuverT = 0;
       terminationPauseActive = false;
       terminationArmed = false;
       atBlockActive = false;
     }
+    // Instantly populate the sweep buffers with the newly selected rhythm (see prefillBuffer's own
+    // comment) — skipped when arriving from a maneuver termination, where the trace should keep
+    // flowing continuously from what was already on screen rather than jump to a fresh capture.
+    if(buffer && !fromTermination) prefillBuffer();
     maneuverBtn3.style.display = 'none';
     if(key==='wideQRSMystery'){
       maneuverBtn.style.display = '';
@@ -3858,31 +3881,16 @@
   }
   function startQuizQuestion(){
     quizCorrectKey = quizQuestionKeys[quizQuestionIndex];
+    // switchRhythm() now prefills every sweep buffer (including the 12-lead history buffer) with
+    // real samples of the new rhythm synchronously before it returns — see prefillBuffer() — so the
+    // capture below is already the real, fully-settled one the instant we take it. No more blanking
+    // the canvases and waiting out a full buffer refill (~W/SPEED_PX_PER_SEC seconds) before it's
+    // safe to show or answer.
     switchRhythm(quizCorrectKey, false);
     applyQuizHiding();
     resizeEcg12();
-    // The visible 12-lead window is W samples wide (same span as the main monitor's sweep,
-    // ~W/SPEED_PX_PER_SEC seconds) and switchRhythm doesn't clear the sweep buffer — so the
-    // capture has to wait for a FULL buffer refill, not just a moment, or its older (left) portion
-    // would still show a tail of the previous question's rhythm while only the newest part is
-    // correct. Blank the canvases immediately so nothing stale is shown while that plays out.
-    ecg12Ctxs.forEach((c,i)=>{
-      const cw = ecg12Widths[i], ch = ecg12Heights[i];
-      if(!cw || !ch) return;
-      c.fillStyle = '#fdf2f0';
-      c.fillRect(0,0,cw,ch);
-    });
-    const flushDelayMs = Math.ceil((W/SPEED_PX_PER_SEC)*1000) + 150;
-    setTimeout(()=>{
-      if(quizMode && quizCorrectKey === quizQuestionKeys[quizQuestionIndex]){
-        resetEcg12Scrub();
-        draw12Lead();
-        // Only now, once the captured ECG is actually the real (fully-flushed) one, let the
-        // person choose an answer — the options started disabled precisely so they can't answer
-        // off the blank/stale placeholder shown while the buffer was still refilling.
-        [...quizOptions.children].forEach(b=>{ b.disabled = false; });
-      }
-    }, flushDelayMs);
+    resetEcg12Scrub();
+    draw12Lead();
     quizAnswered = false;
     quizFeedback.innerHTML = '';
     quizNextBtn.style.display = 'none';
@@ -3910,7 +3918,9 @@
       b.style.color = 'var(--ink)';
       b.style.border = '1px solid var(--border)';
       b.textContent = label;
-      b.disabled = true; // re-enabled once the 12-lead capture actually settles, see flushDelayMs below
+      // No longer starts disabled: switchRhythm()'s prefillBuffer() (see its own comment) already
+      // guarantees the 12-lead capture taken above is the real, fully-settled one — there's no more
+      // stale/blank window after a question loads for these to guard against.
       b.addEventListener('click', ()=>handleQuizAnswer(label, correctLabel, b));
       quizOptions.appendChild(b);
     });
