@@ -747,23 +747,47 @@
   function resize(){
     dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    W = Math.floor(rect.width);
-    H = Math.floor(rect.height);
-    canvas.width = W*dpr;
-    canvas.height = H*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    buffer = new Float32Array(W).fill(0);
-    pPhaseBuffer = new Float32Array(W).fill(-1);
-    vtQRSPhaseBuffer = new Float32Array(W).fill(-1);
-    ecg12ExtraSamples = Math.round(ECG12_EXTRA_HISTORY_SEC * SPEED_PX_PER_SEC);
-    ecg12HistSize = W + ecg12ExtraSamples;
-    ecg12HistBuffer = new Float32Array(ecg12HistSize).fill(0);
-    ecg12HistPPhase = new Float32Array(ecg12HistSize).fill(-1);
-    ecg12HistVTPhase = new Float32Array(ecg12HistSize).fill(-1);
-    ecg12HistWriteHead = 0;
-    ecg12ScrubSamples = 0;
+    // The main sweep canvas is display:none while Modo ejercicio's static 12-lead view is showing
+    // (applyQuizHiding hides mainScopeFrame), so its own rect.width reads 0 during any resize that
+    // fires while a quiz question is up (mobile address-bar show/hide, a keyboard opening, rotating
+    // the phone — not just window drag). Reallocating every buffer at W=0 wiped ecg12HistBuffer down
+    // to nothing but its fixed 4s "extra history" — and, worse, made draw12Lead()'s W-wide snapshot
+    // an EMPTY array, so the strip stayed permanently blank until the next real resize with the
+    // canvas visible again. Skip the whole reallocation when the canvas is currently hidden — nothing
+    // actually needs to resize when it has no on-screen size, and W/H/buffer/etc. simply keep
+    // whatever values they already had (correct for whenever mainScopeFrame is next shown).
+    if(rect.width>0){
+      W = Math.floor(rect.width);
+      H = Math.floor(rect.height);
+      canvas.width = W*dpr;
+      canvas.height = H*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      buffer = new Float32Array(W).fill(0);
+      pPhaseBuffer = new Float32Array(W).fill(-1);
+      vtQRSPhaseBuffer = new Float32Array(W).fill(-1);
+      ecg12ExtraSamples = Math.round(ECG12_EXTRA_HISTORY_SEC * SPEED_PX_PER_SEC);
+      ecg12HistSize = W + ecg12ExtraSamples;
+      ecg12HistBuffer = new Float32Array(ecg12HistSize).fill(0);
+      ecg12HistPPhase = new Float32Array(ecg12HistSize).fill(-1);
+      ecg12HistVTPhase = new Float32Array(ecg12HistSize).fill(-1);
+      ecg12HistWriteHead = 0;
+      ecg12ScrubSamples = 0;
+    }
 
     resizePressureCanvas();
+
+    // A resize() can fire well after the app has already picked a rhythm (rotating the phone,
+    // the mobile browser's address bar hiding/showing on scroll, a keyboard opening) — not just at
+    // startup. Every buffer above was just reallocated flat-zero, so without refilling them here the
+    // trace would either sit on a blank line until the next sweep lap (Simulador) or — worse — stay
+    // blank forever in Modo ejercicio / with the 12-lead panel open, since advanceOneSample() only
+    // runs while ecg12Visible is false (see loop()). RHYTHMS[currentKey] already exists by the time
+    // this first runs at startup (currentKey defaults to 'sinus', and RHYTHMS is defined well above),
+    // so this is always safe to call unconditionally. Re-applies the same cycle-aligned showcase
+    // window (see prefillBuffer's own comment) that switchRhythm used, so a resize mid-quiz-question
+    // for one of those rhythms doesn't undo it and fall back to an arbitrary point in its cycle.
+    const showcase = QUIZ_SHOWCASE_ALIGN[currentKey];
+    prefillBuffer(showcase ? showcase[0] : null, showcase ? showcase[1] : 0);
 
     if(ecg12Visible){ resizeEcg12(); draw12Lead(); }
   }
@@ -3310,11 +3334,51 @@
   // back across and overwrite that flat line. Called right after a (non-termination) rhythm
   // switch, so the monitor shows the newly selected rhythm immediately and in full, with no
   // isoelectric flash and no mid-lap "still catching up" period.
-  function prefillBuffer(){
+  // alignCycleSec/phaseOffsetSec (both optional): several rhythms are built from a short
+  // repeating pattern (a run of normal beats followed by a run of "faulty" ones, e.g. every
+  // pacemaker malfunction below, or the tachy-brady syndrome's much longer afib/pause/escape/
+  // sinus sequence) — the plain buffer-refill above always resumes the pattern from the SAME
+  // reset point and then runs for a duration that depends only on the screen's width, so
+  // whether the visible trailing window happens to land on the "faulty" part or the "normal"
+  // part is pure coincidence of screen size, not chance. When alignCycleSec is given, the total
+  // fill length is stretched (never shortened — it's always at least the normal buffer-refill
+  // amount, so the rest of the history buffer is never left with stale data from the previous
+  // rhythm) to a point where (length - phaseOffsetSec) is an exact multiple of alignCycleSec —
+  // i.e. "now" always lands exactly phaseOffsetSec into the cycle, showing the same portion of
+  // it every time, regardless of window width.
+  function prefillBuffer(alignCycleSec, phaseOffsetSec){
     const count = ecg12HistBuffer ? ecg12HistSize : W;
-    for(let i=0;i<count;i++) advanceOneSample();
+    let total = count;
+    if(alignCycleSec){
+      const offset = phaseOffsetSec || 0;
+      const baseSec = count/SPEED_PX_PER_SEC;
+      const k = Math.max(0, Math.ceil((baseSec-offset)/alignCycleSec));
+      total = Math.max(count, Math.round((offset + k*alignCycleSec)*SPEED_PX_PER_SEC));
+    }
+    for(let i=0;i<total;i++) advanceOneSample();
     acc = 0; // the burst above already accounts for that time; don't let the next real frame double it up
   }
+  // Cycle lengths for the pacemaker-fault rhythms: each is a fixed-length run of N beats at its
+  // own rate, the last few of which are the fault — aligning "now" to an exact multiple of that
+  // cycle (phaseOffsetSec 0) always lands it right at the END of a fault run, so the trailing
+  // window shows that whole run instead of only whichever few beats the screen width happened
+  // to land on. tachyBrady isn't a short repeating beat-pattern the same way, so it gets its own
+  // phaseOffsetSec instead: the point right as the escape beats give way back to sinus, so the
+  // trailing window covers the abrupt afib cutoff, the pause, AND the escape beats — the whole
+  // "cambia de taquicardia a bradicardia" moment the quiz question is actually about.
+  const TB_ESCAPE_RR = 60/TB_ESCAPE_RATE;
+  const TB_ESCAPE_PHASE_SEC = TB_ESCAPE_RR*0.15 + TB_ESCAPE_BEATS*TB_ESCAPE_RR;
+  const TB_CYCLE_SEC = TB_AFIB_DURATION + TB_PAUSE_DURATION + TB_ESCAPE_PHASE_SEC + TB_SINUS_DURATION;
+  const TB_SHOWCASE_OFFSET_SEC = TB_AFIB_DURATION + TB_PAUSE_DURATION + TB_ESCAPE_PHASE_SEC;
+  const QUIZ_SHOWCASE_ALIGN = {
+    pacemakerDDD: [5*(60/70), 0],
+    pacemakerAtrialFailure: [9*(60/75), 0],
+    pacemakerAtrialUndersense: [5*(60/75), 0],
+    pacemakerVentricularUndersense: [5*(60/75), 0],
+    pacemakerAtrialOversense: [5*(60/75), 0],
+    pacemakerVentricularOversense: [6*(60/70), 0],
+    tachyBrady: [TB_CYCLE_SEC, TB_SHOWCASE_OFFSET_SEC],
+  };
 
   function loop(ts){
     if(lastTs===null) lastTs = ts;
@@ -3322,10 +3386,17 @@
     dt = Math.min(dt, 0.05);
     lastTs = ts;
 
-    acc += SPEED_PX_PER_SEC*dt;
-    while(acc>=1){
-      advanceOneSample();
-      acc -= 1;
+    // While the 12-lead ECG panel is open (in Simulador, via its own toggle button, or throughout
+    // Modo ejercicio, where it's the only thing shown), the whole monitor freezes exactly where it
+    // was the instant it opened — main sweep, pressure trace and HR readout included — instead of
+    // the live telemetry running on behind a supposedly-static capture. simTime simply stops
+    // advancing here and picks back up from the same instant once the panel closes again.
+    if(!ecg12Visible){
+      acc += SPEED_PX_PER_SEC*dt;
+      while(acc>=1){
+        advanceOneSample();
+        acc -= 1;
+      }
     }
 
     draw();
@@ -3530,6 +3601,12 @@
         if(activeCategory===cat) return;
         activeCategory = cat;
         buildTabs();
+        // Categories with more than one rhythm are left for the person to pick a tab from, same as
+        // always — but "Ritmo sinusal" (and any other category that only ever holds one rhythm) has
+        // no second tab to click, so selecting the category IS selecting the rhythm: switch to it
+        // right away instead of leaving the previous category's rhythm silently still selected.
+        const keysInCat = order.filter(key => TAB_GROUPS[key]===cat);
+        if(keysInCat.length===1) switchRhythm(keysInCat[0], false);
       });
       categoryTabsWrap.appendChild(b);
     });
@@ -3639,7 +3716,10 @@
     // Instantly populate the sweep buffers with the newly selected rhythm (see prefillBuffer's own
     // comment) — skipped when arriving from a maneuver termination, where the trace should keep
     // flowing continuously from what was already on screen rather than jump to a fresh capture.
-    if(buffer && !fromTermination) prefillBuffer();
+    if(buffer && !fromTermination){
+      const showcase = QUIZ_SHOWCASE_ALIGN[key];
+      prefillBuffer(showcase ? showcase[0] : null, showcase ? showcase[1] : 0);
+    }
     maneuverBtn3.style.display = 'none';
     if(key==='wideQRSMystery'){
       maneuverBtn.style.display = '';
