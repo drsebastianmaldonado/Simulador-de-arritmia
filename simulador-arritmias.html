@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ECG Arritmias — Simulador de Arritmias</title>
+<meta name="color-scheme" content="light dark">
+<title>Simulador de Arritmias</title>
 <meta property="og:title" content="Simulador de Arritmias">
 <meta property="og:description" content="AlgoritmoTSV · Dr. Sebastián Maldonado">
 <meta property="og:image" content="cover-arritmias.png">
@@ -31,17 +32,26 @@
     --border:var(--hairline); --trace:var(--ok); --amber:var(--warn); --cyan:var(--accent);
     color-scheme:light dark;
   }
-  @media (prefers-color-scheme:dark){
-    :root{
-      --ground:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --ink-muted:#9c9ca4; --hairline:#2e2e32;
+  :root[data-theme="dark"]{--ground:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --ink-muted:#9c9ca4; --hairline:#2e2e32;
       --fill:#78788033; --accent:#4c9bff; --on-accent:#000000; --sky:#4cc2ff; --violet:#a98bff;
       --ok:#30d158; --warn:#ffa733; --danger:#ff6259;
       --cat-brady:#ffa33a; --cat-sv:#4cd070; --cat-v:#ff6b6f;
       --act-shock:#ff5fb0; --act-drug:#3cc8e6; --act-pace:#9a8dff; --act-device:#4c9bff; --act-dx:#cc7ae8;
       --on-act:#000000;
-      --shadow-card:none;
-    }
+      --shadow-card:none;}
+  @media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--ground:#000000; --surface:#1c1c1e; --ink:#f5f5f7; --ink-muted:#9c9ca4; --hairline:#2e2e32;
+      --fill:#78788033; --accent:#4c9bff; --on-accent:#000000; --sky:#4cc2ff; --violet:#a98bff;
+      --ok:#30d158; --warn:#ffa733; --danger:#ff6259;
+      --cat-brady:#ffa33a; --cat-sv:#4cd070; --cat-v:#ff6b6f;
+      --act-shock:#ff5fb0; --act-drug:#3cc8e6; --act-pace:#9a8dff; --act-device:#4c9bff; --act-dx:#cc7ae8;
+      --on-act:#000000;
+      --shadow-card:none;}
   }
+  :root[data-theme="light"]{color-scheme:light;}
+  :root[data-theme="dark"]{color-scheme:dark;}
+  .theme-btn{position:absolute;top:14px;right:14px;width:40px;height:40px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--fill);color:var(--ink);cursor:pointer;font-size:18px;line-height:1;}
+  .hero{position:relative;}
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:var(--ground);color:var(--ink);font:400 16px/1.45 var(--font-sans);-webkit-font-smoothing:antialiased;}
   button{font-family:inherit;}
@@ -52,6 +62,7 @@
   /* Hero */
   .hero{--hc:var(--accent);padding:44px 20px 26px;border-radius:0 0 var(--radius-hero) var(--radius-hero);background:linear-gradient(165deg,color-mix(in srgb,var(--hc) 30%,var(--ground)),color-mix(in srgb,var(--hc) 6%,var(--ground)));}
   .hero-in{max-width:640px;margin:0 auto;}
+  .ver{margin-top:2px;font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--ink-muted);}
   .hicon{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;color:#fff;background:linear-gradient(135deg,var(--hc),color-mix(in srgb,var(--hc) 62%,#000));box-shadow:var(--shadow-icon);}
   .hicon svg{width:26px;height:26px;}
   .hero h1{margin:16px 0 6px;font-size:clamp(32px,9.4vw,40px);font-weight:800;letter-spacing:-.035em;line-height:1.06;text-wrap:balance;}
@@ -121,7 +132,10 @@
   .rhythm-tabs button{min-height:44px;padding:0 14px;border:0;border-radius:var(--radius-ctl);background:var(--fill);color:var(--ink);font:500 14px/1.2 var(--font-sans);cursor:pointer;text-align:left;}
   .rhythm-tabs button.active{background:var(--accent);color:var(--on-accent);font-weight:600;}
   #rhythmTabs button:not(.active){background:linear-gradient(135deg,#f4f4f7,#c9ccd3);color:#1c1c1e;}
-  @media (prefers-color-scheme:dark){#rhythmTabs button:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}}
+  :root[data-theme="dark"] #rhythmTabs button:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}
+  @media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) #rhythmTabs button:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}
+  }
 
   .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
   .slider-block{flex:1;min-width:220px;}
@@ -141,7 +155,10 @@
   #overdriveBtn{background:linear-gradient(135deg,#2ec4b6,#2f8fe0 60%,#4b5fe0);color:#fff;}
   #quizRestartBtn{background:var(--violet);color:var(--on-accent);}
   #infoToggleBtn{margin-top:14px;background:linear-gradient(135deg,#d9f1fb,#dcd6f7);color:#1d2b4a;}
-  @media (prefers-color-scheme:dark){#infoToggleBtn{background:linear-gradient(135deg,#1f4a5e,#3a3170);color:#eaf4ff;}}
+  :root[data-theme="dark"] #infoToggleBtn{background:linear-gradient(135deg,#1f4a5e,#3a3170);color:#eaf4ff;}
+  @media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) #infoToggleBtn{background:linear-gradient(135deg,#1f4a5e,#3a3170);color:#eaf4ff;}
+  }
 
   .info{margin-top:12px;background:linear-gradient(145deg,color-mix(in srgb,var(--sky) 22%,var(--surface)),color-mix(in srgb,var(--sky) 6%,var(--surface)));border-radius:var(--radius-step);padding:16px 18px;font-size:15px;line-height:1.5;color:var(--ink);}
   .info b{color:var(--ink);}
@@ -165,11 +182,50 @@
   .ref-chip{min-height:44px;padding:0 15px;border:0;border-radius:var(--radius-pill);background:var(--surface);color:var(--ink);box-shadow:var(--shadow-card);font:600 14px/1.15 var(--font-sans);cursor:pointer;text-align:left;}
   .ref-chip.active{background:var(--accent);color:var(--on-accent);}
   .ref-chip:not(.active){background:linear-gradient(135deg,#f4f4f7,#c9ccd3);color:#1c1c1e;}
-  @media (prefers-color-scheme:dark){.ref-chip:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}}
+  :root[data-theme="dark"] .ref-chip:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}
+  @media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .ref-chip:not(.active){background:linear-gradient(135deg,#4a4c52,#2a2b2f);color:#f2f2f7;}
+  }
+  #accessoryPathwaysBtn{background:linear-gradient(135deg,color-mix(in srgb,var(--warn) 24%,var(--surface)),color-mix(in srgb,#ef5a6f 16%,var(--surface)));}
+  #rpPrBtn{background:linear-gradient(135deg,color-mix(in srgb,var(--violet) 22%,var(--surface)),color-mix(in srgb,var(--sky) 20%,var(--surface)));}
+  #rpprChipRow .ref-chip.t0:not(.active){background:linear-gradient(135deg,#ffd9a0,#f2a65a);color:#3a1d06;}
+  #rpprChipRow .ref-chip.t1:not(.active){background:linear-gradient(135deg,#bfe9fb,#6cc4f0);color:#052a3d;}
+  #rpprChipRow .ref-chip.t2:not(.active){background:linear-gradient(135deg,#dccdfb,#a98bff);color:#1f0d4a;}
+  :root[data-theme="dark"] #rpprChipRow .ref-chip.t0:not(.active){background:linear-gradient(135deg,#8a5a1e,#5c3a10);color:#ffe9c8;}
+  :root[data-theme="dark"] #rpprChipRow .ref-chip.t1:not(.active){background:linear-gradient(135deg,#1f6a8c,#134560);color:#e1f5ff;}
+  :root[data-theme="dark"] #rpprChipRow .ref-chip.t2:not(.active){background:linear-gradient(135deg,#5c45a8,#3a2a78);color:#efe8ff;}
+  @media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) #rpprChipRow .ref-chip.t0:not(.active){background:linear-gradient(135deg,#8a5a1e,#5c3a10);color:#ffe9c8;}
+  :root:not([data-theme="light"]) #rpprChipRow .ref-chip.t1:not(.active){background:linear-gradient(135deg,#1f6a8c,#134560);color:#e1f5ff;}
+  :root:not([data-theme="light"]) #rpprChipRow .ref-chip.t2:not(.active){background:linear-gradient(135deg,#5c45a8,#3a2a78);color:#efe8ff;}
+  }
+  #reconBtn{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-sv) 22%,var(--surface)),color-mix(in srgb,var(--sky) 20%,var(--surface)));}
+  .ref-group{flex-basis:100%;margin:6px 0 0;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);}
+  .ref-group:first-child{margin-top:0;}
+  .recon .ref-chip.g0:not(.active){background:linear-gradient(135deg,#c9f0d4,#7fd49a);color:#0b3a1c;}
+  .recon .ref-chip.g1:not(.active){background:linear-gradient(135deg,#bfe9fb,#6cc4f0);color:#052a3d;}
+  .recon .ref-chip.g2:not(.active){background:linear-gradient(135deg,#ffe0a8,#f5b25c);color:#3a1d06;}
+  .recon .ref-chip.g3:not(.active){background:linear-gradient(135deg,#ffd0d3,#f08a92);color:#4a0f14;}
+  .recon .ref-chip.g4:not(.active){background:linear-gradient(135deg,#dccdfb,#a98bff);color:#1f0d4a;}
+:root[data-theme="dark"] .recon .ref-chip.g0:not(.active){background:linear-gradient(135deg,#1f6a3a,#124526);color:#d9f7e3;}
+  :root[data-theme="dark"] .recon .ref-chip.g1:not(.active){background:linear-gradient(135deg,#1f6a8c,#134560);color:#e1f5ff;}
+  :root[data-theme="dark"] .recon .ref-chip.g2:not(.active){background:linear-gradient(135deg,#8a5a1e,#5c3a10);color:#ffe9c8;}
+  :root[data-theme="dark"] .recon .ref-chip.g3:not(.active){background:linear-gradient(135deg,#8c2f38,#5c1a22);color:#ffe0e2;}
+  :root[data-theme="dark"] .recon .ref-chip.g4:not(.active){background:linear-gradient(135deg,#5c45a8,#3a2a78);color:#efe8ff;}
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) .recon .ref-chip.g0:not(.active){background:linear-gradient(135deg,#1f6a3a,#124526);color:#d9f7e3;}
+    :root:not([data-theme="light"]) .recon .ref-chip.g1:not(.active){background:linear-gradient(135deg,#1f6a8c,#134560);color:#e1f5ff;}
+    :root:not([data-theme="light"]) .recon .ref-chip.g2:not(.active){background:linear-gradient(135deg,#8a5a1e,#5c3a10);color:#ffe9c8;}
+    :root:not([data-theme="light"]) .recon .ref-chip.g3:not(.active){background:linear-gradient(135deg,#8c2f38,#5c1a22);color:#ffe0e2;}
+    :root:not([data-theme="light"]) .recon .ref-chip.g4:not(.active){background:linear-gradient(135deg,#5c45a8,#3a2a78);color:#efe8ff;}
+  }
   .ref-table-wrap{overflow-x:auto;border-radius:var(--radius-ctl);background:var(--surface);}
   .ref-table{border-collapse:collapse;width:100%;min-width:860px;font-size:14px;}
   .ref-table th{background:var(--fill);color:var(--ink-muted);text-align:left;padding:10px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;}
   .ref-table td{padding:10px;border-top:.5px solid var(--hairline);color:var(--ink);vertical-align:top;line-height:1.4;}
+  .ref-table.narrow{min-width:0;font-size:13px;}
+  .ref-table.narrow th{white-space:normal;letter-spacing:.02em;padding:8px 6px;}
+  .ref-table.narrow td{padding:8px 6px;}
   .ref-detail{display:none;margin-top:12px;border-radius:var(--radius-step);padding:18px;background:linear-gradient(145deg,color-mix(in srgb,var(--sky) 26%,var(--ground)),color-mix(in srgb,var(--sky) 7%,var(--ground)));}
   .ref-detail.show{display:block;}
   .ref-detail .label{font-size:12px;font-weight:700;letter-spacing:.07em;color:var(--ink-muted);text-transform:uppercase;margin-top:12px;}
@@ -181,9 +237,11 @@
 </head>
 <body>
 <header class="hero">
+  <button type="button" id="themeBtn" class="theme-btn" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">☾</button>
   <div class="hero-in">
     <div class="hicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l2.5-6 4 13 2.5-7H22"/></svg></div>
-    <h1>ECG Arritmias</h1>
+    <h1>Simulador de arritmias</h1>
+    <div class="ver">versión 1.1</div>
     <p>Simulador de ritmos cardíacos. Elegí un ritmo, mirá el trazado y practicá reconocerlo.</p>
   </div>
 </header>
@@ -215,7 +273,6 @@
     <button type="button" id="simModeBtn" class="mode-toggle-btn active">Simulador</button>
     <button type="button" id="quizModeBtn" class="mode-toggle-btn">Modo ejercicio</button>
   </div>
-  <button type="button" id="accessoryPathwaysBtn" class="cm-row"><span class="cm-badge" style="--c:var(--warn)">VA</span><span class="t"><b>Tipos de vías accesorias</b><small>Características y cuadro comparativo</small></span><svg class="cm-chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l5 5-5 5"/></svg></button>
 
   <div class="monitor">
     <div class="ref-overlay" id="accessoryOverlay">
@@ -227,6 +284,28 @@
         <div class="ref-chip-row" id="accessoryChipRow"></div>
         <div class="ref-hint" style="margin:0 0 12px;">Elegí una vía para ver todas sus características.</div>
         <div class="ref-detail" id="accessoryDetail"></div>
+      </div>
+    </div>
+    <div class="ref-overlay" id="rpprOverlay">
+      <div class="ref-modal">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <h2>Tips para diferenciar qué tipo de TSV con RP &gt; PR</h2>
+          <button type="button" class="ref-close-btn" id="rpprCloseBtn">✕</button>
+        </div>
+        <div class="ref-chip-row" id="rpprChipRow"></div>
+        <div class="ref-hint" style="margin:0 0 12px;">Elegí un tipo de TSV para ver sus características.</div>
+        <div class="ref-detail" id="rpprDetail"></div>
+      </div>
+    </div>
+    <div class="ref-overlay" id="reconOverlay">
+      <div class="ref-modal">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <h2>Reconocimiento de ritmos cardíacos</h2>
+          <button type="button" class="ref-close-btn" id="reconCloseBtn">✕</button>
+        </div>
+        <div class="ref-chip-row recon" id="reconChipRow"></div>
+        <div class="ref-hint" style="margin:0 0 12px;">Elegí primero el lugar de origen. Siempre interpretar la Fc según la edad del paciente y el contexto (reposo, ejercicio, fiebre, shock).</div>
+        <div class="ref-detail recon" id="reconDetail"></div>
       </div>
     </div>
     <div class="monitor-head">
@@ -313,6 +392,10 @@
     </div>
   </div>
 
+  <button type="button" id="accessoryPathwaysBtn" class="cm-row"><span class="cm-badge" style="--c:var(--warn)">VA</span><span class="t"><b>Tipos de vías accesorias</b><small>Características y cuadro comparativo</small></span><svg class="cm-chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l5 5-5 5"/></svg></button>
+  <button type="button" id="rpPrBtn" class="cm-row"><span class="cm-badge" style="--c:var(--violet)">RP&gt;PR</span><span class="t"><b>TSV con RP &gt; PR</b><small>TRIN atípica, TAE y PJRT: cómo diferenciarlas</small></span><svg class="cm-chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l5 5-5 5"/></svg></button>
+  <button type="button" id="reconBtn" class="cm-row"><span class="cm-badge" style="--c:var(--cat-sv)">ECG</span><span class="t"><b>Reconocimiento de ritmos cardíacos</b><small>Cómo reconocer cada ritmo</small></span><svg class="cm-chev" viewBox="0 0 7 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 1l5 5-5 5"/></svg></button>
+
 </div>
 
 <script>
@@ -393,6 +476,193 @@
   const leadTag = document.getElementById('leadTag');
   const quizModeBtn = document.getElementById('quizModeBtn');
   const simModeBtn = document.getElementById('simModeBtn');
+
+
+  // ---------- Reference: reconocimiento de ritmos cardíacos (cuadro "Tipos de ritmos cardíacos") ----------
+  const RECON_GROUPS = ['Sinusal','Aurículas','Nodo AV / His','Ventrículos','Marcapasos'];
+  const RECON_COLS = ['Fc < Pc 3%','Fc Pc 3–95%','Fc > Pc 95%'];
+  const RECON_RHYTHMS = [
+    {g:0, name:'Bradicardia sinusal', fc:'Fc < Pc 3%', how:'Onda P sinusal (positiva en DII, negativa en aVR) antes de cada QRS, con PR frecuentemente constante y QRS angosto. Ritmo regular con Fc por debajo del percentil 3 para la edad.'},
+    {g:0, name:'Ritmo normal', fc:'Fc Pc 3–95%', how:'Mismos criterios de ritmo sinusal: P sinusal antes de cada QRS, PR frecuentemente constante y QRS angosto, con Fc entre los percentiles 3 y 95 para la edad.'},
+    {g:0, name:'Taquicardia sinusal', fc:'Fc > Pc 95%', how:'Misma morfología de P sinusal antes de cada QRS, con Fc por encima del percentil 95. El inicio y el final son graduales y la Fc varía con el contexto (fiebre, dolor, llanto, ejercicio).'},
+    {g:1, name:'Ritmo de escape auricular', fc:'Fc < Pc 3%', how:'Ritmo lento y regular con onda P frecuentemente diferente a la sinusal, seguida de QRS angosto con PR conservado. Aparece cuando el nodo sinusal descarga más lento que un foco auricular.'},
+    {g:1, name:'Ritmo auricular acelerado', fc:'Fc Pc 3–95%', how:'Onda P frecuentemente diferente a la sinusal (ectópica) antes de cada QRS, con QRS angosto y Fc dentro del rango normal para la edad, algo superior a la sinusal. Inicio y final graduales.'},
+    {g:1, name:'FAMRV', fc:'Fc Pc 3–95%', how:'Fibrilación auricular de moderada respuesta ventricular: sin ondas P, línea de base con ondas f irregulares y RR irregularmente irregular. QRS angosto con Fc ventricular dentro del rango normal.'},
+    {g:1, name:'AA (4:1)', fc:'Fc Pc 3–95%', how:'Aleteo auricular con conducción 4:1: ondas F regulares en "dientes de sierra" (mejor vistas en DII, DIII y aVF), sin línea isoeléctrica. Al conducir 4:1 el RR es regular y la Fc ventricular queda en rango normal.'},
+    {g:1, name:'TRAV', fc:'Fc > Pc 95%', how:'Taquicardia regular de QRS angosto, de inicio y final súbitos, con Fc muy alta y casi fija. La P retrógrada aparece luego del QRS (RP corto, RP < PR), en el segmento ST o al inicio de la T. Es la reentrada por vía accesoria.'},
+    {g:1, name:'TA', fc:'Fc > Pc 95%', how:'Taquicardia auricular: onda P ectópica antes de cada QRS (RP largo, RP > PR), con inicio y final graduales (calentamiento y enfriamiento) y Fc variable. Puede ser incesante y no se interrumpe aunque haya bloqueo AV.'},
+    {g:1, name:'FAARV', fc:'Fc > Pc 95%', how:'Fibrilación auricular de alta respuesta ventricular: sin ondas P, RR irregularmente irregular y Fc ventricular alta. QRS angosto (puede ser ancho si hay preexcitación).'},
+    {g:1, name:'AA', fc:'Fc > Pc 95%', how:'Aleteo auricular: ondas F regulares en "dientes de sierra" sin línea isoeléctrica. Con conducción 2:1 la Fc ventricular es alta y fija; con conducción variable el RR es irregular.'},
+    {g:2, name:'Ritmo de escape nodal', fc:'Fc < Pc 3%', how:'Ritmo regular y lento con QRS angosto sin onda P que lo preceda. Puede haber P retrógrada (negativa en DII, DIII y aVF) después del QRS o disociación AV.'},
+    {g:2, name:'Ritmo nodal acelerado', fc:'Fc Pc 3–95%', how:'QRS angosto y regular sin P que lo preceda, con Fc dentro del rango normal, algo por encima de la sinusal. Puede haber P retrógrada o disociación AV isorrítmica. Suele ser transitorio.'},
+    {g:2, name:'JET', fc:'Fc > Pc 95%', how:'Taquicardia ectópica de la unión: QRS angosto, regular o levemente irregular, con inicio y final graduales. Hay disociación AV (P más lentas que el QRS) o conducción retrógrada 1:1. Frecuente en el posoperatorio de cirugía cardíaca y no responde a adenosina ni a cardioversión.'},
+    {g:2, name:'TRIN', fc:'Fc > Pc 95%', how:'Taquicardia regular de QRS angosto con inicio y final súbitos. La P retrógrada queda dentro o al final del QRS (pseudo r\' en V1, pseudo S en derivaciones inferiores) o no se ve (RP muy corto). Más frecuente en escolares y adolescentes.'},
+    {g:2, name:'TRAV (nodo AV)', fc:'Fc > Pc 95%', how:'Taquicardia regular de QRS angosto con inicio y final súbitos y P retrógrada luego del QRS (RP corto, RP < PR). El circuito usa el nodo AV en un sentido y una vía accesoria en el otro.'},
+    {g:3, name:'Ritmo de escape ventricular', fc:'Fc < Pc 3%', how:'Ritmo regular y lento con QRS ancho, sin onda P relacionada (disociación AV). Aparece cuando fallan los marcapasos superiores, por ejemplo en el BAV completo.'},
+    {g:3, name:'RIVA', fc:'Fc Pc 3–95%', how:'Ritmo idioventricular acelerado: QRS ancho y regular con Fc cercana a la sinusal, dentro del rango normal. Hay disociación AV con latidos de fusión y captura; inicio y final graduales. Suele ser bien tolerado en corazones sanos.'},
+    {g:3, name:'TV', fc:'Fc > Pc 95%', how:'Taquicardia ventricular: QRS ancho y regular con Fc alta y disociación AV (P más lentas que el QRS), con latidos de captura o fusión. Inicio y final súbitos.'},
+    {g:3, name:'FV', fc:'Fc > Pc 95%', how:'Fibrilación ventricular: no hay QRS identificables, solo ondulaciones caóticas de amplitud y morfología variables. Es paro cardíaco y requiere desfibrilación inmediata.'},
+    {g:4, name:'Back up (VVI/AAI)', fc:'Fc < Pc 3%', how:'La espiga aparece solo cuando el ritmo propio cae por debajo de la frecuencia programada. En VVI la espiga se sigue de QRS ancho; en AAI, de una onda P. Entre espigas se ve el ritmo propio del paciente.'},
+    {g:4, name:'AAI / VVI / DDD', fc:'Fc Pc 3–95%', how:'Espigas regulares a la frecuencia programada. AAI: espiga seguida de P y QRS propio. VVI: espiga seguida de QRS ancho. DDD: espiga auricular y/o ventricular separadas por el intervalo AV programado.'},
+    {g:4, name:'TMP', fc:'Fc > Pc 95%', how:'Taquicardia mediada por marcapasos: ritmo regular rápido con QRS estimulado (espiga seguida de QRS ancho) a la frecuencia máxima de seguimiento y P retrógrada luego del QRS. Es un circuito en asa sin fin en DDD; se interrumpe con imán o reprogramación.'}
+  ];
+  const RECON_TABLE = [
+    ['Sinusal', ['Bradicardia sinusal'], ['Ritmo normal'], ['Taquicardia sinusal']],
+    ['Aurículas', ['Ritmo de escape auricular'], ['Ritmo auricular acelerado','FAMRV','AA (4:1)'], ['TRAV','TA','FAARV','AA']],
+    ['Nodo AV / His', ['Ritmo de escape nodal'], ['Ritmo nodal acelerado'], ['JET','TRIN','TRAV']],
+    ['Ventrículos', ['Ritmo de escape ventricular'], ['RIVA'], ['TV','FV']],
+    ['Marcapasos', ['Back up (VVI/AAI)'], ['AAI / VVI / DDD'], ['TMP']]
+  ];
+  const RECON_ABBR = 'AA: aleteo auricular · FAMRV: fibrilación auricular de moderada respuesta ventricular · FAARV: fibrilación auricular de alta respuesta ventricular · FV: fibrilación ventricular · TA: taquicardia auricular · JET: junctional ectopic tachycardia · TMP: taquicardia mediada por marcapasos · TRIN: taquicardia por reentrada intranodal · TRAV: taquicardia por reentrada AV (vía accesoria) · TV: taquicardia ventricular';
+  const reconBtn = document.getElementById('reconBtn');
+  const reconOverlay = document.getElementById('reconOverlay');
+  const reconCloseBtn = document.getElementById('reconCloseBtn');
+  const reconChipRow = document.getElementById('reconChipRow');
+  const reconDetail = document.getElementById('reconDetail');
+  const RECON_ORIGIN_ECG = [
+    'P sinusal (positiva en DII y negativa en aVR) antes de cada QRS, con PR frecuentemente constante y QRS angosto.',
+    'Onda P frecuentemente diferente a la sinusal (ectópica), o bien ondas f/F sin P definida (fibrilación y aleteo). El QRS es angosto.',
+    'QRS angosto sin P que lo preceda: la P puede ser retrógrada (negativa en derivaciones inferiores), quedar oculta en el QRS o estar disociada.',
+    'QRS ancho, sin P relacionada (disociación AV) y con alteración secundaria de la repolarización.',
+    'Espigas del marcapasos antes de la P y/o del QRS; el QRS estimulado es ancho cuando captura el ventrículo.'
+  ];
+  let reconOrigin = null, reconFc = null, reconRhythm = null, reconShowTable = false;
+  function reconChip(label, cls, onClick, active, dashed){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'ref-chip' + (cls ? ' '+cls : '') + (active ? ' active' : '');
+    if(dashed) b.style.borderStyle = 'dashed';
+    b.textContent = label;
+    b.addEventListener('click', onClick);
+    return b;
+  }
+  function reconLabel(text, mt){
+    const d = document.createElement('div');
+    d.className = 'label';
+    if(mt) d.style.marginTop = mt;
+    d.textContent = text;
+    return d;
+  }
+  function reconVal(text){
+    const d = document.createElement('div');
+    d.className = 'val';
+    d.textContent = text;
+    return d;
+  }
+  function reconRow(){
+    const d = document.createElement('div');
+    d.className = 'ref-chip-row';
+    d.style.margin = '8px 0 12px';
+    return d;
+  }
+  function renderRecon(){
+    // 1) Lugares de origen (+ cuadro completo)
+    reconChipRow.innerHTML = '';
+    RECON_GROUPS.forEach((g,gi)=>{
+      reconChipRow.appendChild(reconChip(g, 'g'+gi, ()=>{
+        if(reconOrigin===gi && !reconShowTable){ reconOrigin = null; }
+        else { reconOrigin = gi; }
+        reconFc = null; reconRhythm = null; reconShowTable = false;
+        renderRecon();
+      }, reconOrigin===gi && !reconShowTable, false));
+    });
+    reconChipRow.appendChild(reconChip('Cuadro completo', '', ()=>{
+      reconShowTable = !reconShowTable;
+      reconOrigin = null; reconFc = null; reconRhythm = null;
+      renderRecon();
+    }, reconShowTable, true));
+
+    // 2) Detalle
+    reconDetail.innerHTML = '';
+    if(reconShowTable){
+      const rows = RECON_TABLE.map(r=>'<tr><td style="font-weight:600;">'+r[0]+'</td>'+r.slice(1).map(c=>'<td>'+c.join('<br>')+'</td>').join('')+'</tr>').join('');
+      reconDetail.innerHTML = '<div class="label">Tipos de ritmos cardíacos</div>' +
+        '<div class="ref-table-wrap" style="margin-top:10px;"><table class="ref-table narrow"><thead><tr><th>Lugar de origen</th>' +
+        RECON_COLS.map(c=>'<th>'+c+'</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>' +
+        '<div class="ref-hint">'+RECON_ABBR+'</div>';
+    } else if(reconOrigin!==null){
+      const gi = reconOrigin;
+      reconDetail.appendChild(reconLabel(RECON_GROUPS[gi]));
+      reconDetail.appendChild(reconLabel('Qué se ve en el ECG', '12px'));
+      reconDetail.appendChild(reconVal(RECON_ORIGIN_ECG[gi]));
+      // Fc
+      reconDetail.appendChild(reconLabel('Frecuencia cardíaca (elegí el rango)', '14px'));
+      const fcRow = reconRow();
+      RECON_COLS.forEach(col=>{
+        if(!RECON_RHYTHMS.some(x=>x.g===gi && x.fc===col)) return;
+        fcRow.appendChild(reconChip(col, 'g'+gi, ()=>{
+          reconFc = (reconFc===col) ? null : col;
+          reconRhythm = null;
+          const list = RECON_RHYTHMS.filter(x=>x.g===gi && x.fc===col);
+          if(reconFc && list.length===1) reconRhythm = RECON_RHYTHMS.indexOf(list[0]);
+          renderRecon();
+        }, reconFc===col, false));
+      });
+      reconDetail.appendChild(fcRow);
+      // Ritmos
+      if(reconFc){
+        const list = RECON_RHYTHMS.filter(x=>x.g===gi && x.fc===reconFc);
+        if(list.length>1){
+          reconDetail.appendChild(reconLabel('Ritmo (elegí uno)'));
+          const rRow = reconRow();
+          list.forEach(x=>{
+            const idx = RECON_RHYTHMS.indexOf(x);
+            rRow.appendChild(reconChip(x.name, 'g'+gi, ()=>{
+              reconRhythm = (reconRhythm===idx) ? null : idx;
+              renderRecon();
+            }, reconRhythm===idx, false));
+          });
+          reconDetail.appendChild(rRow);
+        }
+      }
+      // Descripción final
+      if(reconRhythm!==null){
+        const x = RECON_RHYTHMS[reconRhythm];
+        const box = document.createElement('div');
+        box.style.cssText = 'margin-top:4px;padding-top:10px;border-top:.5px solid var(--hairline);';
+        box.appendChild(reconLabel(x.name));
+        box.appendChild(reconLabel('Cómo reconocerlo', '8px'));
+        box.appendChild(reconVal(x.how));
+        reconDetail.appendChild(box);
+      }
+    }
+    if(reconDetail.childNodes.length){
+      reconDetail.classList.add('show');
+      reconDetail.scrollIntoView({behavior:'smooth', block:'nearest'});
+    } else {
+      reconDetail.classList.remove('show');
+    }
+  }
+  function openReconOverlay(){
+    reconOrigin = null; reconFc = null; reconRhythm = null; reconShowTable = false;
+    renderRecon();
+    reconOverlay.classList.add('show');
+  }
+  function closeReconOverlay(){ reconOverlay.classList.remove('show'); }
+  renderRecon();
+  reconBtn.addEventListener('click', openReconOverlay);
+  reconCloseBtn.addEventListener('click', closeReconOverlay);
+  reconOverlay.addEventListener('click', (e)=>{ if(e.target===reconOverlay) closeReconOverlay(); });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape' && reconOverlay.classList.contains('show')) closeReconOverlay();
+  });
+  // ---------- Modo claro / oscuro (sigue al sistema hasta que se elige a mano) ----------
+  const themeBtn = document.getElementById('themeBtn');
+  const darkMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function currentThemeIsDark(){
+    const t = document.documentElement.getAttribute('data-theme');
+    return t ? t==='dark' : !!(darkMQ && darkMQ.matches);
+  }
+  function refreshThemeBtn(){ themeBtn.textContent = currentThemeIsDark() ? '☀' : '☾'; }
+  try { const saved = localStorage.getItem('simArritmiasTheme'); if(saved==='light'||saved==='dark') document.documentElement.setAttribute('data-theme', saved); } catch(e){}
+  refreshThemeBtn();
+  themeBtn.addEventListener('click', ()=>{
+    const next = currentThemeIsDark() ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('simArritmiasTheme', next); } catch(e){}
+    refreshThemeBtn();
+  });
+  if(darkMQ && darkMQ.addEventListener) darkMQ.addEventListener('change', refreshThemeBtn);
   const coffeeBtn = document.getElementById('coffeeBtn');
   const coffeeMenu = document.getElementById('coffeeMenu');
   coffeeBtn.addEventListener('click', (e)=>{
@@ -554,6 +824,87 @@
   });
   document.addEventListener('keydown', (e)=>{
     if(e.key==='Escape' && accessoryOverlay.classList.contains('show')) closeAccessoryOverlay();
+  });
+
+  // ---------- Reference: TSV con RP > PR (TRIN atípica / TAE / PJRT) ----------
+  const RPPR_TYPES = [
+    { name:'TRIN atípica', inicio:'Súbito (gatillado por ESV)', term:'Súbito', av:'1 a 1 / 2 a 1', enf:'No', esv:'Bajo' },
+    { name:'TAE', inicio:'Progresivo', term:'Progresivo', av:'1 a 1 / Variable', enf:'Sí', esv:'Alta' },
+    { name:'PJRT', inicio:'Súbito (con ESV o RS)', term:'Súbito / progresivo', av:'1 a 1', enf:'A veces enfría', esv:'Bajo' }
+  ];
+  const RPPR_KEYPOINTS = [
+    'Fenómeno de enfriamiento/calentamiento: lo presenta la TAE; en la PJRT aparece a veces; la TRIN atípica no lo presenta.',
+    'Inicio y terminación progresivos (calentamiento/enfriamiento) orientan a TAE; el inicio súbito orienta a TRIN atípica o PJRT.',
+    'Las ESV son frecuentes en la TAE; en la TRIN atípica y en la PJRT son poco frecuentes.',
+    'Conducción AV: la TRIN atípica puede tener 1 a 1 o 2 a 1; la TAE, 1 a 1 variable; la PJRT, 1 a 1.'
+  ];
+  const RPPR_TABLE_IDX = RPPR_TYPES.length;
+  const RPPR_KEYPOINTS_IDX = RPPR_TYPES.length+1;
+  const rpPrBtn = document.getElementById('rpPrBtn');
+  const rpprOverlay = document.getElementById('rpprOverlay');
+  const rpprCloseBtn = document.getElementById('rpprCloseBtn');
+  const rpprChipRow = document.getElementById('rpprChipRow');
+  const rpprDetail = document.getElementById('rpprDetail');
+  let rpprSelectedIdx = null;
+  function buildRpprChips(){
+    rpprChipRow.innerHTML = '';
+    const add = (label, idx, dashed)=>{
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ref-chip';
+      if(dashed) b.style.borderStyle = 'dashed';
+      b.textContent = label;
+      b.addEventListener('click', ()=>toggleRpprDetail(idx));
+      rpprChipRow.appendChild(b);
+    };
+    RPPR_TYPES.forEach((t,i)=>{ add(t.name, i, false); rpprChipRow.lastChild.classList.add('t'+i); });
+    add('Cuadro comparativo', RPPR_TABLE_IDX, true);
+    add('Puntos clave', RPPR_KEYPOINTS_IDX, true);
+  }
+  function toggleRpprDetail(idx){
+    const chips = [...rpprChipRow.children];
+    if(rpprSelectedIdx===idx){
+      rpprSelectedIdx = null;
+      chips.forEach(c=>c.classList.remove('active'));
+      rpprDetail.classList.remove('show');
+      rpprDetail.innerHTML = '';
+      return;
+    }
+    rpprSelectedIdx = idx;
+    chips.forEach((c,i)=>c.classList.toggle('active', i===idx));
+    if(idx===RPPR_TABLE_IDX){
+      const rows = [['Inicio','inicio'],['Terminación','term'],['Conducción AV','av'],['Fenómeno de enfriamiento / calentamiento','enf'],['ESV','esv']]
+        .map(([lab,k])=>'<tr><td style="font-weight:600;">'+lab+'</td>'+RPPR_TYPES.map(t=>'<td>'+t[k]+'</td>').join('')+'</tr>').join('');
+      rpprDetail.innerHTML = '<div class="label">TSV con RP &gt; PR: cuadro comparativo</div>' +
+        '<div class="ref-table-wrap" style="margin-top:10px;"><table class="ref-table narrow"><thead><tr><th>TSV</th>' +
+        RPPR_TYPES.map(t=>'<th>'+t.name+'</th>').join('') + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+    } else if(idx===RPPR_KEYPOINTS_IDX){
+      rpprDetail.innerHTML = '<div class="label">Puntos clave</div><ul style="margin:8px 0 0;padding-left:18px;font-size:.85rem;line-height:1.6;">' +
+        RPPR_KEYPOINTS.map(t=>'<li>'+t+'</li>').join('') + '</ul>';
+    } else {
+      const t = RPPR_TYPES[idx];
+      rpprDetail.innerHTML =
+        '<div class="label">' + t.name + '</div>' +
+        '<div class="label" style="margin-top:12px;">Inicio</div><div class="val">' + t.inicio + '</div>' +
+        '<div class="label">Terminación</div><div class="val">' + t.term + '</div>' +
+        '<div class="label">Conducción AV</div><div class="val">' + t.av + '</div>' +
+        '<div class="label">Fenómeno de enfriamiento / calentamiento</div><div class="val">' + t.enf + '</div>' +
+        '<div class="label">ESV</div><div class="val">' + t.esv + '</div>';
+    }
+    rpprDetail.classList.add('show');
+    rpprDetail.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function openRpprOverlay(){
+    if(rpprSelectedIdx!==null) toggleRpprDetail(rpprSelectedIdx);
+    rpprOverlay.classList.add('show');
+  }
+  function closeRpprOverlay(){ rpprOverlay.classList.remove('show'); }
+  buildRpprChips();
+  rpPrBtn.addEventListener('click', openRpprOverlay);
+  rpprCloseBtn.addEventListener('click', closeRpprOverlay);
+  rpprOverlay.addEventListener('click', (e)=>{ if(e.target===rpprOverlay) closeRpprOverlay(); });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key==='Escape' && rpprOverlay.classList.contains('show')) closeRpprOverlay();
   });
 
   const quizPanel = document.getElementById('quizPanel');
@@ -2946,6 +3297,7 @@
   let hrDetectPeakT = 0;
   let hrDetectLastPeakT = -999;
   let hrDetectLastRR = null;
+  let hrDetectRecentRR = []; // últimos 2 intervalos RR → la FC mostrada es el promedio de las 2 FC instantáneas
   function updateHRDetector(t, v){
     if(v > HR_DETECT_THRESHOLD){
       if(hrDetectLastPeakT > -900 && !hrDetectAboveThresh && (t - hrDetectLastPeakT) < HR_DETECT_REFRACTORY) return; // still refractory — same QRS's notch, not a new beat
@@ -2958,13 +3310,17 @@
       hrDetectAboveThresh = false;
       if(hrDetectLastPeakT > -900){
         hrDetectLastRR = hrDetectPeakT - hrDetectLastPeakT;
+        hrDetectRecentRR.push(hrDetectLastRR);
+        if(hrDetectRecentRR.length>2) hrDetectRecentRR.shift();
       }
       hrDetectLastPeakT = hrDetectPeakT;
     }
   }
   function currentDetectedHR(){
     if(hrDetectLastRR===null || (simTime - hrDetectLastPeakT) > HR_DETECT_TIMEOUT) return null;
-    return Math.round(60/hrDetectLastRR);
+    let sum = 0;
+    for(const rr of hrDetectRecentRR) sum += 60/rr;
+    return Math.round(sum/hrDetectRecentRR.length);
   }
 
   let beatKindQueue = 'sinus';
@@ -3851,6 +4207,7 @@
     hrDetectAboveThresh = false;
     hrDetectLastPeakT = -999;
     hrDetectLastRR = null;
+    hrDetectRecentRR = [];
     rateSlider.value = targetRate;
     rateLabel.textContent = targetRate+' lpm';
     rhythmNameEl.textContent = r.label + (fromTermination ? ' (post-maniobra)' : '');
